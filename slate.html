@@ -947,6 +947,36 @@
   .write-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.05); }
   .write-progress-fill { height: 100%; background: #5865F2; transition: width 0.55s cubic-bezier(0.2, 0.9, 0.25, 1); }
 
+  .write-share-btn {
+    display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 10px; cursor: pointer;
+    background: #5865F2; border: none; color: #FFFFFF; font: 600 13px 'Helvetica Neue', Helvetica, Arial, sans-serif; white-space: nowrap;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .write-share-btn:hover { background: #4752C4; }
+  .write-share-btn:active { transform: scale(0.96); }
+  .write-menu {
+    position: absolute; right: 16px; z-index: 30; width: min(340px, calc(100% - 32px)); box-sizing: border-box;
+    padding: 10px; border-radius: 16px; background: rgba(24, 24, 30, 0.94); border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    transform-origin: top right; animation: cfMenuIn 0.22s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+  .write-menu-title { font-size: 12.5px; color: #A6A3B3; padding: 6px 10px 8px; }
+  .write-menu-item {
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px; border-radius: 12px; border: none; cursor: pointer;
+    background: transparent; color: #FFFFFF; text-align: left; font-family: inherit;
+    transition: background 0.15s ease;
+    animation: obItemIn 0.3s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+  .write-menu-item:nth-of-type(2) { animation-delay: 30ms; } .write-menu-item:nth-of-type(3) { animation-delay: 60ms; } .write-menu-item:nth-of-type(4) { animation-delay: 90ms; }
+  .write-menu-item:hover, .write-menu-item:focus-visible { background: rgba(255, 255, 255, 0.07); outline: none; }
+  .write-menu-item:disabled { opacity: 0.5; cursor: default; }
+  .write-menu-icon { width: 38px; height: 38px; flex: none; border-radius: 11px; display: flex; align-items: center; justify-content: center; color: var(--dot); background: color-mix(in srgb, var(--dot) 16%, transparent); }
+  .write-menu-text { display: flex; flex-direction: column; min-width: 0; }
+  .write-menu-text b { font-size: 14.5px; font-weight: 700; }
+  .write-menu-text small { font-size: 12.5px; color: #A6A3B3; margin-top: 2px; }
+  @media (max-width: 560px) { .write-menu { right: 10px; width: calc(100% - 20px); } }
+  @media (prefers-reduced-motion: reduce) { .write-menu, .write-menu-item { animation: none; } }
+
   /* Toolbar: a floating glass bar. */
   #screen-write .doc-toolbar {
     align-self: center; width: fit-content; max-width: calc(100% - 32px); box-sizing: border-box;
@@ -3663,6 +3693,10 @@
       <div class="write-head-side">
         <div class="write-pills" id="writeMeta"></div>
         <span class="write-saved" id="writeSaved" aria-live="polite">Saved</span>
+        <button type="button" class="write-share-btn" id="writeShareBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="writeShareMenu">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
+          Share &amp; export
+        </button>
       </div>
       <div class="write-progress" aria-hidden="true"><div class="write-progress-fill" id="writeProgressBar" style="width:0%;"></div></div>
     </header>
@@ -3713,6 +3747,14 @@
         <span class="doc-color-text">Hooks</span>
         <span class="doc-hooks-count" id="writeHooksCount"></span>
       </button>
+    </div>
+
+    <div class="write-menu" id="writeShareMenu" role="menu" aria-label="Share and export" hidden>
+      <div class="write-menu-title">Share &amp; export</div>
+      <button type="button" class="write-menu-item" role="menuitem" data-export="pdf" style="--dot:#EB5757"><span class="write-menu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h4"/></svg></span><span class="write-menu-text"><b>Save as PDF</b><small>A4 pages, just like you see them</small></span></button>
+      <button type="button" class="write-menu-item" role="menuitem" data-export="docx" style="--dot:#56CCF2"><span class="write-menu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13l1.5 5 2.5-4 2.5 4 1.5-5"/></svg></span><span class="write-menu-text"><b>Save as Word (.docx)</b><small>Opens in Word, Google Docs or Pages</small></span></button>
+      <button type="button" class="write-menu-item" role="menuitem" data-export="send" style="--dot:#6FCF97"><span class="write-menu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></span><span class="write-menu-text"><b>Send a copy</b><small>Send the PDF by message, email or another app</small></span></button>
+      <button type="button" class="write-menu-item" role="menuitem" data-export="copy" style="--dot:#BB6BD9"><span class="write-menu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg></span><span class="write-menu-text"><b>Make a copy</b><small>A new video with this script in it</small></span></button>
     </div>
 
     <div class="write-hooks" id="writeHooksPanel" hidden>
@@ -6485,6 +6527,247 @@
     saveScriptSelection(); // always know where the cursor was, for the toolbar controls
     updateToolbarState();
   });
+
+  // ---------- Share & export (PDF, Word, send a copy, make a copy) ----------
+  const shareMenu = document.getElementById('writeShareMenu');
+  const shareBtn = document.getElementById('writeShareBtn');
+  function setShareMenu(open) {
+    if (open) {
+      const screen = document.getElementById('screen-write');
+      const head = screen.querySelector('.write-head');
+      shareMenu.style.top = (head.getBoundingClientRect().bottom - screen.getBoundingClientRect().top + 8) + 'px';
+    }
+    shareMenu.hidden = !open;
+    shareBtn.setAttribute('aria-expanded', String(open));
+    if (open) shareMenu.querySelector('.write-menu-item').focus();
+  }
+  shareBtn.addEventListener('click', (e) => { e.stopPropagation(); setShareMenu(shareMenu.hidden); });
+  document.addEventListener('click', (e) => { if (!shareMenu.hidden && !shareMenu.contains(e.target)) setShareMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !shareMenu.hidden) { setShareMenu(false); shareBtn.focus(); } });
+  shareMenu.querySelectorAll('[data-export]').forEach(btn => btn.addEventListener('click', async () => {
+    const p = findProject(currentProjectId);
+    if (!p) return;
+    setShareMenu(false);
+    const kind = btn.dataset.export;
+    if (kind === 'copy') { makeScriptCopy(p); return; }
+    if (!scriptPlainText(p.script)) { showToast('Write something first. The script is empty.'); return; }
+    try {
+      showToast(kind === 'docx' ? 'Making your Word file…' : 'Making your PDF…');
+      if (kind === 'docx') { downloadBlob(await scriptToDocx(p), exportFileName(p, 'docx')); showToast('Word file saved.'); return; }
+      const pdf = await scriptToPdf(p);
+      const name = exportFileName(p, 'pdf');
+      if (kind === 'send') {
+        const f = new File([pdf], name, { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [f] })) {
+          try { await navigator.share({ files: [f], title: scriptTitle(p) }); } catch (err) { if (err && err.name !== 'AbortError') throw err; }
+          return;
+        }
+        downloadBlob(pdf, name);
+        showToast("This device can't send files directly, so the PDF was saved instead.");
+        return;
+      }
+      downloadBlob(pdf, name);
+      showToast('PDF saved.');
+    } catch (err) {
+      console.error('Export failed', err);
+      showToast(err && err.userMessage ? err.userMessage : "Couldn't make the file. Check your internet connection and try again.");
+    }
+  }));
+
+  function scriptTitle(p) { return (p.title && p.title.trim()) || p.name || 'Script'; }
+  function exportFileName(p, ext) {
+    const base = scriptTitle(p).replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'Script';
+    return `${base} - script.${ext}`;
+  }
+  function downloadBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+
+  function makeScriptCopy(p) {
+    const copy = {
+      id: uid(), name: `${p.name} (copy)`.slice(0, 80), color: p.color, format: p.format,
+      ideas: [], script: p.script || '', title: '', thumbnail: null, published: false, playlists: [], scheduledDate: '',
+      createdAt: Date.now(), scriptEditedAt: Date.now()
+    };
+    const i = state.projects.findIndex(x => x.id === p.id);
+    state.projects.splice(i < 0 ? 0 : i + 1, 0, copy);
+    save();
+    recordUsage('projectsCreated');
+    renderHome();
+    currentProjectId = copy.id;
+    openScriptWriter(copy);
+    showToast(`Copy made: "${copy.name}". You're editing the copy now.`);
+  }
+
+  // The script as blocks of styled text runs, for the PDF and Word files.
+  function scriptBlocks(html) {
+    const root = document.createElement('div');
+    root.innerHTML = scriptHtmlFromLegacy(html);
+    root.querySelectorAll('[data-pb]').forEach(b => { b.style.marginTop = ''; });
+    const blocks = [];
+    let current = null;
+    const BLOCK = /^(P|DIV|H1|H2|H3|H4|H5|H6|LI|BLOCKQUOTE)$/;
+    const toHex = (c) => {
+      if (!c) return null;
+      if (/^#[0-9a-f]{6}$/i.test(c)) return c.slice(1).toUpperCase();
+      if (/^#[0-9a-f]{3}$/i.test(c)) return c.slice(1).split('').map(x => x + x).join('').toUpperCase();
+      const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      return m ? [m[1], m[2], m[3]].map(n => (+n).toString(16).padStart(2, '0')).join('').toUpperCase() : null;
+    };
+    const start = (type, el, extra) => {
+      current = { type, runs: [], align: (el && (el.style.textAlign || el.getAttribute('align'))) || 'left', ...extra };
+      blocks.push(current);
+    };
+    const walk = (node, style, list) => {
+      node.childNodes.forEach(n => {
+        if (n.nodeType === 3) {
+          const text = n.textContent.replace(/\u200B/g, '').replace(/\s+/g, ' ');
+          if (!text) return;
+          if (!current) start('p', null);
+          current.runs.push({ text, ...style });
+          return;
+        }
+        if (n.nodeType !== 1) return;
+        const tag = n.tagName;
+        if (tag === 'BR') { if (!current) start('p', null); current.runs.push({ text: '\n', ...style }); return; }
+        if (tag === 'UL' || tag === 'OL') { walk(n, style, { ordered: tag === 'OL', n: 0 }); current = null; return; }
+        const s = { ...style };
+        if (tag === 'B' || tag === 'STRONG' || /^(bold|[6-9]00)$/.test(n.style.fontWeight)) s.b = true;
+        if (tag === 'I' || tag === 'EM' || n.style.fontStyle === 'italic') s.i = true;
+        if (tag === 'U' || /underline/.test(n.style.textDecoration || n.style.textDecorationLine || '')) s.u = true;
+        const color = toHex(n.getAttribute('color') || n.style.color);
+        if (color) s.color = color;
+        const size = parseFloat(n.style.fontSize);
+        if (size && /px$/.test(n.style.fontSize)) s.size = size;
+        if (BLOCK.test(tag)) {
+          const type = tag === 'LI' ? 'li' : /^H[1-3]$/.test(tag) ? tag.toLowerCase() : /^H[4-6]$/.test(tag) ? 'h3' : 'p';
+          start(type, n, tag === 'LI' && list ? { ordered: list.ordered, number: ++list.n } : {});
+          walk(n, s, list);
+          current = null;
+          return;
+        }
+        walk(n, s, list);
+      });
+    };
+    walk(root, {}, null);
+    // Trim spaces at the ends of each block; keep empty blocks as blank lines.
+    blocks.forEach(b => {
+      if (b.runs.length) { b.runs[0].text = b.runs[0].text.replace(/^ +/, ''); const last = b.runs[b.runs.length - 1]; last.text = last.text.replace(/ +$/, ''); }
+    });
+    while (blocks.length && !blocks[blocks.length - 1].runs.some(r => r.text.trim())) blocks.pop();
+    return blocks;
+  }
+  const BLOCK_SCALE = { h1: 1.7, h2: 1.35, h3: 1.15, p: 1, li: 1 };
+  const SCRIPT_BASE_PX = 14;
+
+  // ----- PDF: drawn to match the A4 pages in the editor (620px wide = 595pt) -----
+  async function scriptToPdf(p) {
+    await loadLib('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    doc.setProperties({ title: scriptTitle(p), creator: 'CreativeFlow' });
+    const PX = 595.28 / 620;
+    const pageW = 595.28, pageH = 841.89, mx = 30 * PX, myTop = 44 * PX, myBottom = 44 * PX;
+    const maxW = pageW - mx * 2;
+    // The built-in PDF fonts only cover Western characters; anything else (e.g. emoji) is left out.
+    const safe = (t) => t.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, '-').replace(/\u2026/g, '...').replace(/\u2022/g, '-').replace(/[^\n\x20-\x7E\xA0-\xFF]/g, '');
+    let y = myTop;
+    const newPage = () => { doc.addPage(); y = myTop; };
+    const fontFor = (r) => r.b && r.i ? 'bolditalic' : r.b ? 'bold' : r.i ? 'italic' : 'normal';
+    const blocks = scriptBlocks(p.script);
+    blocks.forEach(block => {
+      const base = SCRIPT_BASE_PX * (BLOCK_SCALE[block.type] || 1);
+      const heading = block.type[0] === 'h';
+      const indent = block.type === 'li' ? 22 * PX : 0;
+      if (heading && y > myTop) y += base * 0.6 * PX;
+      // Split the runs into words (keeping each word's style), then wrap them into lines.
+      const words = [];
+      block.runs.forEach(r => {
+        safe(r.text).split(/(\n| )/).forEach(part => {
+          if (part === '') return;
+          words.push({ ...r, text: part, size: (r.size || SCRIPT_BASE_PX) * (BLOCK_SCALE[block.type] || 1) * PX, b: r.b || heading });
+        });
+      });
+      const lines = [[]];
+      let lineW = 0;
+      words.forEach(w => {
+        if (w.text === '\n') { lines.push([]); lineW = 0; return; }
+        doc.setFont('helvetica', fontFor(w)); doc.setFontSize(w.size);
+        w.width = doc.getTextWidth(w.text);
+        if (w.text === ' ' && !lines[lines.length - 1].length) return;
+        if (lineW + w.width > maxW - indent && w.text !== ' ' && lines[lines.length - 1].length) {
+          const line = lines[lines.length - 1];
+          while (line.length && line[line.length - 1].text === ' ') { lineW -= line.pop().width; }
+          lines.push([]); lineW = 0;
+        }
+        lines[lines.length - 1].push(w); lineW += w.width;
+      });
+      lines.forEach((line, li) => {
+        const size = Math.max(base * PX, ...line.map(w => w.size));
+        const lh = size * 1.7;
+        if (y + lh > pageH - myBottom) newPage();
+        const width = line.reduce((n, w) => n + w.width, 0);
+        let x = mx + indent;
+        if (block.align === 'center') x = mx + indent + (maxW - indent - width) / 2;
+        else if (block.align === 'right') x = pageW - mx - width;
+        const baseline = y + size * 1.25;
+        if (li === 0 && block.type === 'li') {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(base * PX); doc.setTextColor(28, 28, 30);
+          doc.text(block.ordered ? `${block.number}.` : '-', mx + 6 * PX, baseline);
+        }
+        line.forEach(w => {
+          doc.setFont('helvetica', fontFor(w)); doc.setFontSize(w.size);
+          const c = w.color || '1C1C1E';
+          doc.setTextColor(parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16));
+          if (w.text !== ' ') doc.text(w.text, x, baseline);
+          if (w.u) { doc.setDrawColor(parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)); doc.setLineWidth(Math.max(0.5, w.size / 16)); doc.line(x, baseline + 1.5, x + w.width, baseline + 1.5); }
+          x += w.width;
+        });
+        y += lh;
+      });
+      y += (heading ? 0.3 : 0.7) * base * PX;
+    });
+    return doc.output('blob');
+  }
+
+  // ----- Word (.docx): a small Word document written by hand, zipped with JSZip -----
+  async function scriptToDocx(p) {
+    await loadLib('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+    const xml = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const paras = scriptBlocks(p.script).map(block => {
+      const scale = BLOCK_SCALE[block.type] || 1;
+      const heading = block.type[0] === 'h';
+      const jc = { center: 'center', right: 'right', justify: 'both' }[block.align];
+      const runs = [];
+      if (block.type === 'li') runs.push({ text: block.ordered ? `${block.number}.\t` : '\u2022\t' });
+      block.runs.forEach(r => runs.push(r));
+      const runXml = runs.map(r => {
+        const pt = (r.size || SCRIPT_BASE_PX) * scale * 0.75;
+        const props = '<w:rFonts w:ascii="Helvetica" w:hAnsi="Helvetica" w:cs="Helvetica"/>' +
+          (r.b || heading ? '<w:b/>' : '') + (r.i ? '<w:i/>' : '') + (r.u ? '<w:u w:val="single"/>' : '') +
+          (r.color ? `<w:color w:val="${r.color}"/>` : '') + `<w:sz w:val="${Math.round(pt * 2)}"/>`;
+        return r.text.split('\n').map((part, i) => (i ? `<w:r><w:rPr>${props}</w:rPr><w:br/></w:r>` : '') +
+          (part ? `<w:r><w:rPr>${props}</w:rPr><w:t xml:space="preserve">${xml(part)}</w:t></w:r>` : '')).join('');
+      }).join('');
+      const ppr = '<w:pPr>' + (heading ? '<w:keepNext/>' : '') +
+        `<w:spacing w:before="${heading ? 200 : 0}" w:after="${heading ? 80 : 160}" w:line="${heading ? 276 : 360}" w:lineRule="auto"/>` +
+        (block.type === 'li' ? '<w:ind w:left="540" w:hanging="360"/>' : '') + (jc ? `<w:jc w:val="${jc}"/>` : '') + '</w:pPr>';
+      return `<w:p>${ppr}${runXml}</w:p>`;
+    }).join('');
+    const zip = new window.JSZip();
+    zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>');
+    zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>');
+    zip.file('docProps/core.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>${xml(scriptTitle(p))}</dc:title><dc:creator>CreativeFlow</dc:creator></cp:coreProperties>`);
+    zip.file('word/document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${paras}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`);
+    return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+  }
 
   function setWriteSaved(done) {
     const el = document.getElementById('writeSaved');
