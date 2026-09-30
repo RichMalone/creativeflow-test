@@ -7435,6 +7435,16 @@
       if (first) first.focus();
     }
   });
+  // Clicking anywhere outside the Hooks drawer (the script, the header, the background) closes it.
+  // composedPath is used because tapping a star or ✕ re-draws the drawer, detaching the clicked button.
+  document.addEventListener('click', (e) => {
+    if (!writeHooksOpen || !document.getElementById('screen-write').classList.contains('active')) return;
+    const path = e.composedPath();
+    if (path.includes(document.getElementById('writeHooksPanel')) || path.includes(document.getElementById('hooksToolBtn'))) return;
+    writeHooksOpen = false;
+    const p = findProject(currentProjectId);
+    if (p) renderWriteHooks(p);
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && writeHooksOpen && document.getElementById('screen-write').classList.contains('active')) {
       writeHooksOpen = false;
