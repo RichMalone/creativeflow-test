@@ -801,6 +801,15 @@
   }
   @keyframes obItemIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   .ob-reveal-now { animation: obItemIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  /* The planner floats over the page it was opened from, blurred and dimmed like the + menu. */
+  #screen-planner.has-underlay.active {
+    position: fixed; inset: 0; z-index: 60; background: transparent;
+    animation: cfFadeIn 0.25s ease both;
+  }
+  #screen-planner.has-underlay .ob-backdrop { inset: 0; }
+  #screen-planner.has-underlay .ob-backdrop span { display: none; }
+  #screen-planner.has-underlay .ob-backdrop::after { background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .screen.behind-planner { pointer-events: none; }
   /* Thin progress bar across the top of the card. */
   .ob-bar { position: absolute; top: 0; left: 18px; right: 18px; height: 3px; border-radius: 0 0 3px 3px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
   .ob-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #5865F2, #9B7BFF); border-radius: inherit; transition: width 0.55s cubic-bezier(0.2, 0.9, 0.25, 1); }
@@ -7474,6 +7483,7 @@
     document.getElementById('panel-ai').classList.toggle('active', name === 'ai');
   }
 
+  let plannerUnderlay = null; // the screen shown blurred behind the planner
   function switchScreen(name) {
     // Everything past sign-in needs an active membership; send the user to the license screen instead.
     if (!LICENSE_OPEN_SCREENS.includes(name) && !licenseAllowsUse()) {
@@ -7481,6 +7491,7 @@
       renderLicenseScreen();
       name = 'license';
     }
+    const previous = document.querySelector('.screen.active:not(.behind-planner)');
     document.getElementById('screen-license').classList.toggle('active', name === 'license');
     document.getElementById('screen-splash').classList.toggle('active', name === 'splash');
     document.getElementById('screen-auth').classList.toggle('active', name === 'auth');
@@ -7501,6 +7512,13 @@
     document.getElementById('screen-dailyquests').classList.toggle('active', name === 'dailyquests');
     document.getElementById('screen-updates').classList.toggle('active', name === 'updates');
     document.getElementById('screen-legal').classList.toggle('active', name === 'legal');
+    // The planner shows the page it was opened from underneath it (kept while it visits the script page).
+    const under = name === 'planner' && previous && previous.id !== 'screen-write' && previous.id !== 'screen-planner' ? previous : (name === 'planner' ? plannerUnderlay : null);
+    plannerUnderlay = name === 'planner' || name === 'write' ? under || plannerUnderlay : null;
+    document.querySelectorAll('.screen.behind-planner').forEach(s => { s.classList.remove('behind-planner'); s.inert = false; });
+    const planner = document.getElementById('screen-planner');
+    planner.classList.toggle('has-underlay', !!(name === 'planner' && under));
+    if (name === 'planner' && under) { under.classList.add('active', 'behind-planner'); under.inert = true; }
     document.body.classList.toggle('on-updates-screen', name === 'updates');
     updateTabBar(name);
   }
