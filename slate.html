@@ -911,6 +911,8 @@
     color: var(--text);
   }
   #screen-write > * { position: relative; z-index: 1; }
+  #screen-write > .write-menu { position: absolute; z-index: 30; }
+  #screen-write > .write-hooks { position: absolute; z-index: 25; }
   #screen-write > .write-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background:
       radial-gradient(60% 45% at 12% 0%, rgba(109, 60, 240, 0.28), transparent 70%),
@@ -1040,9 +1042,21 @@
   #screen-write .doc-page::selection, #screen-write .doc-page *::selection { background: rgba(88, 101, 242, 0.25); }
 
   @media (max-width: 560px) {
-    .write-head { margin: calc(8px + var(--safe-top)) 10px 0; padding: 10px 12px 12px; gap: 10px; }
-    .write-title { font-size: 18px; }
-    .write-head-side { width: 100%; }
+    .write-head { margin: calc(8px + var(--safe-top)) 10px 0; padding: 8px 10px 10px; gap: 8px 10px; border-radius: 14px; }
+    .write-back { width: 34px; height: 34px; border-radius: 10px; }
+    .write-head-main { flex: 1 1 0; }
+    .write-eyebrow { font-size: 11.5px; margin-bottom: 0; }
+    .write-title { font-size: 17px; }
+    .write-share-btn { order: 2; width: 36px; height: 34px; padding: 0; justify-content: center; }
+    .write-share-label { display: none; }
+    .write-head-side { order: 3; width: 100%; gap: 6px; }
+    .write-pills { gap: 5px; }
+    .write-pill { font-size: 11.5px; padding: 4px 8px; }
+    .write-saved { font-size: 11.5px; margin-left: auto; }
+    #screen-write .doc-toolbar { margin-top: 8px; padding: 6px; }
+    #screen-write .doc-tool-btn { width: 32px; height: 32px; }
+    #screen-write .doc-toolbar select, #screen-write .doc-color-label { height: 32px; }
+    #screen-write .doc-canvas { padding-top: 14px; }
     #screen-write .doc-toolbar { max-width: calc(100% - 20px); }
     #screen-write .write-hooks { width: calc(100% - 20px); }
   }
@@ -3712,11 +3726,11 @@
       <div class="write-head-side">
         <div class="write-pills" id="writeMeta"></div>
         <span class="write-saved" id="writeSaved" aria-live="polite">Saved</span>
-        <button type="button" class="write-share-btn" id="writeShareBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="writeShareMenu">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
-          Share &amp; export
-        </button>
       </div>
+      <button type="button" class="write-share-btn" id="writeShareBtn" aria-label="Share and export" aria-haspopup="menu" aria-expanded="false" aria-controls="writeShareMenu">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
+          <span class="write-share-label">Share &amp; export</span>
+        </button>
       <div class="write-progress" aria-hidden="true"><div class="write-progress-fill" id="writeProgressBar" style="width:0%;"></div></div>
     </header>
 
