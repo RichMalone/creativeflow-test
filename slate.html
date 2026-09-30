@@ -741,6 +741,85 @@
   .customize-sub { font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin: 16px 0 8px; }
   .customize-sub:first-child { margin-top: 0; }
 
+  /* ---------- Onboarding (Discord-style card) ---------- */
+  #screen-onboarding {
+    position: relative; align-items: center; justify-content: center;
+    padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
+    overflow: hidden; background: #0B0A10;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .ob-backdrop { position: absolute; inset: -10%; pointer-events: none; }
+  .ob-backdrop span { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; animation: obFloat 14s ease-in-out infinite alternate; }
+  .ob-backdrop span:nth-child(1) { width: 46vmax; height: 46vmax; left: -8vmax; top: -10vmax; background: #6D3CF0; }
+  .ob-backdrop span:nth-child(2) { width: 40vmax; height: 40vmax; right: -10vmax; top: 20vmax; background: #2E5BFF; animation-delay: -5s; }
+  .ob-backdrop span:nth-child(3) { width: 30vmax; height: 30vmax; left: 30vmax; bottom: -12vmax; background: #B04CE0; animation-delay: -9s; }
+  .ob-backdrop::after { content: ''; position: absolute; inset: 0; background: rgba(8, 7, 14, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  @keyframes obFloat { from { transform: translate(0, 0) scale(1); } to { transform: translate(3vmax, -2vmax) scale(1.08); } }
+
+  .ob-card {
+    position: relative; z-index: 1;
+    width: min(700px, 100%); max-height: min(760px, 100%);
+    display: flex; flex-direction: column;
+    background: rgba(24, 24, 30, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    animation: obCardIn 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+  @keyframes obCardIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
+  #screen-onboarding .onboard-progress { display: none; }
+  #screen-onboarding .onboard-body { padding: 26px 28px 8px; overflow-y: auto; }
+  #screen-onboarding .onboard-body.ob-swap { animation: obSwap 0.32s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  @keyframes obSwap { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
+  .ob-count { font-size: 14px; color: #A6A3B3; margin-bottom: 8px; }
+  #screen-onboarding .onboard-question { font-size: 28px; font-weight: 700; color: #FFFFFF; line-height: 1.2; margin-bottom: 6px; letter-spacing: -0.01em; }
+  #screen-onboarding .onboard-hint { color: #A6A3B3; font-size: 14px; margin-bottom: 18px; }
+
+  .ob-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 8px; }
+  @media (max-width: 520px) { .ob-tiles { grid-template-columns: minmax(0, 1fr); } }
+  .ob-tile {
+    display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 4px 14px; align-items: start;
+    text-align: left; padding: 16px 16px 16px 18px; border-radius: 12px; cursor: pointer;
+    background: rgba(255, 255, 255, 0.035); border: 1.5px solid rgba(255, 255, 255, 0.08); color: #FFFFFF;
+    font-family: inherit; position: relative; overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ob-tile::before { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 90% at 0% 0%, var(--dot) 0%, transparent 60%); opacity: 0.1; transition: opacity 0.2s ease; pointer-events: none; }
+  .ob-tile:hover { transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.16); }
+  .ob-tile:focus-visible { outline: 2px solid #5865F2; outline-offset: 2px; }
+  .ob-tile.selected { border-color: var(--dot); background: rgba(255, 255, 255, 0.06); box-shadow: 0 0 0 1px var(--dot), 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .ob-tile.selected::before { opacity: 0.28; }
+  .ob-tile.pop { animation: obPop 0.22s ease; }
+  @keyframes obPop { 50% { transform: scale(1.03); } }
+  .ob-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--dot); margin-top: 3px; grid-row: 1 / span 2; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06); transition: box-shadow 0.15s ease; }
+  .ob-tile.selected .ob-dot { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9); }
+  .ob-name { font-weight: 700; font-size: 16px; position: relative; }
+  .ob-desc { font-size: 13px; color: #B8B5C6; line-height: 1.45; position: relative; }
+
+  #screen-onboarding .onboard-field-label { color: #A6A3B3; font-size: 13px; }
+  #screen-onboarding .onboard-input { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; font-family: inherit; }
+  #screen-onboarding .onboard-input:focus { border-color: #5865F2; }
+  #screen-onboarding .onboard-connect-btn { font-family: inherit; }
+  #screen-onboarding .feature-toggle-row { border-color: rgba(255, 255, 255, 0.08); }
+
+  #screen-onboarding .onboard-footer { display: flex; align-items: center; gap: 14px; padding: 16px 28px 24px; border-top: none; }
+  #screen-onboarding .onboard-btn { flex: none; font-family: inherit; }
+  #screen-onboarding .onboard-btn.primary { background: #5865F2; color: #FFFFFF; padding: 12px 28px; border-radius: 10px; font-size: 15px; transition: background 0.15s ease, transform 0.1s ease; }
+  #screen-onboarding .onboard-btn.primary:hover { background: #4752C4; }
+  #screen-onboarding .onboard-btn.secondary { margin-left: auto; background: transparent; border: none; color: #A6A3B3; padding: 12px 6px; }
+  #screen-onboarding .onboard-btn.secondary:hover { color: #FFFFFF; }
+  .ob-hint { font-size: 13.5px; color: #A6A3B3; }
+  @media (max-width: 520px) {
+    #screen-onboarding .onboard-body { padding: 22px 18px 6px; }
+    #screen-onboarding .onboard-question { font-size: 23px; }
+    #screen-onboarding .onboard-footer { padding: 14px 18px 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ob-backdrop span, .ob-card, #screen-onboarding .onboard-body.ob-swap, .ob-tile.pop { animation: none; }
+    .ob-tile { transition: none; }
+  }
+
   /* ---------- Video planner ---------- */
   #screen-planner .onboard-progress { padding-top: 12px; }
   .planner-card {
@@ -3150,11 +3229,15 @@
 
   <!-- ONBOARDING -->
   <section class="screen" id="screen-onboarding">
-    <div class="onboard-progress" id="onboardProgress"></div>
-    <div class="onboard-body" id="onboardBody"></div>
-    <div class="onboard-footer">
-      <button type="button" class="onboard-btn secondary" id="onboardBackBtn">Back</button>
-      <button type="button" class="onboard-btn primary" id="onboardNextBtn">Next</button>
+    <div class="ob-backdrop" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="ob-card" role="dialog" aria-modal="true" aria-labelledby="obQuestion">
+      <div class="onboard-progress" id="onboardProgress"></div>
+      <div class="onboard-body" id="onboardBody"></div>
+      <div class="onboard-footer">
+        <button type="button" class="onboard-btn primary" id="onboardNextBtn">Next</button>
+        <span class="ob-hint" id="obHint"></span>
+        <button type="button" class="onboard-btn secondary" id="onboardBackBtn">Back</button>
+      </div>
     </div>
   </section>
 
@@ -7679,19 +7762,62 @@ Give concise, specific, practical feedback grounded in the material above when a
     if (idx === -1) arr.push(value); else arr.splice(idx, 1);
   }
 
-  function renderMultiSelect(container, options, selectedArr) {
+  const OB_DOT_COLORS = ['#F2C94C', '#EB5757', '#6FCF97', '#56CCF2', '#BB6BD9', '#F2994A', '#FF8FB1', '#2DD4BF', '#8C9EFF', '#C4C4C4'];
+  const OB_DESCRIPTIONS = {
+    'YouTube': 'Long videos, Shorts and everything in between.',
+    'TikTok': 'Short, vertical videos that move fast.',
+    'Instagram': 'Reels, posts and stories.',
+    'Twitch/Streaming': 'Live streams and the clips that come from them.',
+    'Multi-platform': 'The same ideas, posted across several apps.',
+    'Gaming': "Let's plays, reviews, streams and guides.",
+    'Vlogs': 'Your life, your travels and your day-to-day.',
+    'Commentary': "Reacting to and breaking down what's happening.",
+    'Education': 'Teaching, explaining and how-tos.',
+    'Fitness': 'Workouts, health and training.',
+    'Comedy': 'Sketches, skits and making people laugh.',
+    'Tech': 'Gadgets, apps and how things work.',
+    'Lifestyle': 'Fashion, food, home and routines.',
+    'Reviews': 'Honest takes on products and media.',
+    'Grow my audience': 'More followers and subscribers.',
+    'Get more views': 'Reach more people with every post.',
+    'Improve my content': 'Make each video better than the last.',
+    'Generate better video ideas': 'Never run out of things to make.',
+    'Improve retention': 'Keep people watching until the end.',
+    'Improve titles and thumbnails': 'Get more clicks on what you post.',
+    'Become more consistent': 'Post on a schedule you can keep.',
+    'Monetize my content': 'Turn your content into income.',
+    'Build a personal brand': 'Be known for something.',
+    'Other': 'Something else? Pick this too.'
+  };
+
+  // Option tiles: coloured dot, name and a short description. Multi-select unless single is set.
+  function renderOptionTiles(container, options, isSelected, onPick) {
     container.innerHTML = '';
-    options.forEach(opt => {
+    container.className = 'ob-tiles';
+    options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'onboard-option' + (selectedArr.includes(opt) ? ' selected' : '');
-      btn.textContent = opt;
+      btn.className = 'ob-tile' + (isSelected(opt) ? ' selected' : '');
+      btn.style.setProperty('--dot', OB_DOT_COLORS[i % OB_DOT_COLORS.length]);
+      btn.setAttribute('aria-pressed', String(isSelected(opt)));
+      btn.innerHTML = '<span class="ob-dot" aria-hidden="true"></span><span class="ob-name"></span><span class="ob-desc"></span>';
+      btn.querySelector('.ob-name').textContent = opt;
+      btn.querySelector('.ob-desc').textContent = OB_DESCRIPTIONS[opt] || '';
       btn.addEventListener('click', () => {
-        toggleInArray(selectedArr, opt);
-        btn.classList.toggle('selected');
+        onPick(opt);
+        container.querySelectorAll('.ob-tile').forEach((b, j) => {
+          const on = isSelected(options[j]);
+          b.classList.toggle('selected', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
       });
       container.appendChild(btn);
     });
+  }
+
+  function renderMultiSelect(container, options, selectedArr) {
+    renderOptionTiles(container, options, (o) => selectedArr.includes(o), (o) => toggleInArray(selectedArr, o));
   }
 
   function updateOnboardProgress() {
@@ -7711,27 +7837,27 @@ Give concise, specific, practical feedback grounded in the material above when a
     const backBtn = document.getElementById('onboardBackBtn');
     backBtn.style.visibility = onboardStep === 1 ? 'hidden' : 'visible';
     body.innerHTML = '';
+    body.classList.remove('ob-swap'); void body.offsetWidth; body.classList.add('ob-swap');
+    document.getElementById('obHint').textContent = [1, 2, 4].includes(onboardStep) ? 'Choose all that apply.' : '';
     const p = state.profile;
 
     if (onboardStep === 1) {
       body.innerHTML = `
-        <div class="onboard-eyebrow">Let's personalize your experience</div>
-        <div class="onboard-question">What type of creator are you?</div>
-        <div class="onboard-hint">Select all that apply.</div>
+        <div class="ob-count">Question ${onboardStep} of ${ONBOARD_STEP_COUNT}</div>
+        <div class="onboard-question" id="obQuestion">What type of creator are you?</div>
         <div class="onboard-options" id="ms1"></div>`;
       renderMultiSelect(document.getElementById('ms1'), CREATOR_TYPE_OPTIONS, p.creatorTypes);
       nextBtn.textContent = 'Next';
     } else if (onboardStep === 2) {
       body.innerHTML = `
-        <div class="onboard-eyebrow">Let's personalize your experience</div>
+        <div class="ob-count">Question ${onboardStep} of ${ONBOARD_STEP_COUNT}</div>
         <div class="onboard-question">What type of content do you create?</div>
-        <div class="onboard-hint">Select all that apply.</div>
         <div class="onboard-options" id="ms2"></div>`;
       renderMultiSelect(document.getElementById('ms2'), CONTENT_TYPE_OPTIONS, p.contentTypes);
       nextBtn.textContent = 'Next';
     } else if (onboardStep === 3) {
       body.innerHTML = `
-        <div class="onboard-eyebrow">Let's personalize your experience</div>
+        <div class="ob-count">Question ${onboardStep} of ${ONBOARD_STEP_COUNT}</div>
         <div class="onboard-question">Tell us about your channel</div>
         <div class="onboard-hint">This helps tailor ideas and feedback to your channel.</div>
         <div class="onboard-field-label">Channel / creator name</div>
@@ -7759,19 +7885,7 @@ Give concise, specific, practical feedback grounded in the material above when a
       document.getElementById('fLength').addEventListener('input', e => { p.videoLength = e.target.value; });
       document.getElementById('fFreq').addEventListener('input', e => { p.uploadFrequency = e.target.value; });
       const platformOptions = CREATOR_TYPE_OPTIONS.filter(o => o !== 'Multi-platform');
-      const msPlatform = document.getElementById('msPlatform');
-      platformOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'onboard-option' + (p.mainPlatform === opt ? ' selected' : '');
-        btn.textContent = opt;
-        btn.addEventListener('click', () => {
-          p.mainPlatform = opt;
-          msPlatform.querySelectorAll('.onboard-option').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-        });
-        msPlatform.appendChild(btn);
-      });
+      renderOptionTiles(document.getElementById('msPlatform'), platformOptions, (o) => p.mainPlatform === o, (o) => { p.mainPlatform = o; });
       body.querySelectorAll('.onboard-connect-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           showToast(`Connecting ${btn.dataset.platform} is coming soon — enter your info manually for now.`);
@@ -7780,15 +7894,14 @@ Give concise, specific, practical feedback grounded in the material above when a
       nextBtn.textContent = 'Next';
     } else if (onboardStep === 4) {
       body.innerHTML = `
-        <div class="onboard-eyebrow">Let's personalize your experience</div>
+        <div class="ob-count">Question ${onboardStep} of ${ONBOARD_STEP_COUNT}</div>
         <div class="onboard-question">What are you trying to accomplish?</div>
-        <div class="onboard-hint">Select all that apply.</div>
         <div class="onboard-options" id="ms4"></div>`;
       renderMultiSelect(document.getElementById('ms4'), GOAL_OPTIONS, p.goals);
       nextBtn.textContent = 'Next';
     } else if (onboardStep === 5) {
       body.innerHTML = `
-        <div class="onboard-eyebrow">Almost there</div>
+        <div class="ob-count">Question ${onboardStep} of ${ONBOARD_STEP_COUNT}</div>
         <div class="onboard-question">Customize your workspace</div>
         <div class="onboard-hint">Turn on the tools you actually want — you can change this anytime.</div>
         <div id="featureToggleList"></div>`;
