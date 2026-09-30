@@ -741,13 +741,35 @@
   .customize-sub { font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin: 16px 0 8px; }
   .customize-sub:first-child { margin-top: 0; }
 
-  /* ---------- Onboarding (Discord-style card) ---------- */
-  #screen-onboarding {
+  /* ---------- Onboarding + video planner (Discord-style card) ---------- */
+  :is(#screen-onboarding, #screen-planner) {
     position: relative; align-items: center; justify-content: center;
     padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
     overflow: hidden; background: #0B0A10;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
+  /* Inside the card everything uses the card's own dark colours, whatever the app theme. */
+  .ob-card {
+    --bg: #111118; --text: #FFFFFF; --text-muted: #A6A3B3;
+    --surface: rgba(255, 255, 255, 0.04); --surface-2: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.1);
+    --accent: #5865F2; --accent-rgb: 88, 101, 242; --accent-ink: #FFFFFF;
+    color: var(--text);
+  }
+  .ob-card .onboard-body { flex: 1 1 auto; min-height: 0; }
+  #screen-planner .ob-card { width: min(820px, 100%); }
+  .ob-close {
+    position: absolute; top: 14px; right: 14px; z-index: 2;
+    width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, 0.06); color: #A6A3B3;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .ob-close:hover { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
+  #screen-planner .onboard-body { padding-right: 56px; }
+  #screen-planner .onboard-question + .onboard-hint { max-width: 620px; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn.primary:disabled { opacity: 0.45; cursor: default; background: #5865F2; }
+  .ob-section-q { font-size: 20px; font-weight: 700; color: #FFFFFF; margin: 28px 0 4px; }
   .ob-backdrop { position: absolute; inset: -10%; pointer-events: none; }
   .ob-backdrop span { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; animation: obFloat 14s ease-in-out infinite alternate; }
   .ob-backdrop span:nth-child(1) { width: 46vmax; height: 46vmax; left: -8vmax; top: -10vmax; background: #6D3CF0; }
@@ -768,13 +790,13 @@
     animation: obCardIn 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
   }
   @keyframes obCardIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
-  #screen-onboarding .onboard-progress { display: none; }
-  #screen-onboarding .onboard-body { padding: 26px 28px 8px; overflow-y: auto; }
-  #screen-onboarding .onboard-body.ob-swap { animation: obSwap 0.32s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  :is(#screen-onboarding, #screen-planner) .onboard-progress { display: none; }
+  :is(#screen-onboarding, #screen-planner) .onboard-body { padding: 26px 28px 8px; overflow-y: auto; }
+  :is(#screen-onboarding, #screen-planner) .onboard-body.ob-swap { animation: obSwap 0.32s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
   @keyframes obSwap { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
   .ob-count { font-size: 14px; color: #A6A3B3; margin-bottom: 8px; }
-  #screen-onboarding .onboard-question { font-size: 28px; font-weight: 700; color: #FFFFFF; line-height: 1.2; margin-bottom: 6px; letter-spacing: -0.01em; }
-  #screen-onboarding .onboard-hint { color: #A6A3B3; font-size: 14px; margin-bottom: 18px; }
+  :is(#screen-onboarding, #screen-planner) .onboard-question { font-size: 28px; font-weight: 700; color: #FFFFFF; line-height: 1.2; margin-bottom: 6px; letter-spacing: -0.01em; }
+  :is(#screen-onboarding, #screen-planner) .onboard-hint { color: #A6A3B3; font-size: 14px; margin-bottom: 18px; }
 
   .ob-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 8px; }
   @media (max-width: 520px) { .ob-tiles { grid-template-columns: minmax(0, 1fr); } }
@@ -797,31 +819,30 @@
   .ob-name { font-weight: 700; font-size: 16px; position: relative; }
   .ob-desc { font-size: 13px; color: #B8B5C6; line-height: 1.45; position: relative; }
 
-  #screen-onboarding .onboard-field-label { color: #A6A3B3; font-size: 13px; }
-  #screen-onboarding .onboard-input { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; font-family: inherit; }
-  #screen-onboarding .onboard-input:focus { border-color: #5865F2; }
-  #screen-onboarding .onboard-connect-btn { font-family: inherit; }
-  #screen-onboarding .feature-toggle-row { border-color: rgba(255, 255, 255, 0.08); }
+  :is(#screen-onboarding, #screen-planner) .onboard-field-label { color: #A6A3B3; font-size: 13px; }
+  :is(#screen-onboarding, #screen-planner) .onboard-input { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; font-family: inherit; }
+  :is(#screen-onboarding, #screen-planner) .onboard-input:focus { border-color: #5865F2; }
+  :is(#screen-onboarding, #screen-planner) .onboard-connect-btn { font-family: inherit; }
+  :is(#screen-onboarding, #screen-planner) .feature-toggle-row { border-color: rgba(255, 255, 255, 0.08); }
 
-  #screen-onboarding .onboard-footer { display: flex; align-items: center; gap: 14px; padding: 16px 28px 24px; border-top: none; }
-  #screen-onboarding .onboard-btn { flex: none; font-family: inherit; }
-  #screen-onboarding .onboard-btn.primary { background: #5865F2; color: #FFFFFF; padding: 12px 28px; border-radius: 10px; font-size: 15px; transition: background 0.15s ease, transform 0.1s ease; }
-  #screen-onboarding .onboard-btn.primary:hover { background: #4752C4; }
-  #screen-onboarding .onboard-btn.secondary { margin-left: auto; background: transparent; border: none; color: #A6A3B3; padding: 12px 6px; }
-  #screen-onboarding .onboard-btn.secondary:hover { color: #FFFFFF; }
+  :is(#screen-onboarding, #screen-planner) .onboard-footer { display: flex; align-items: center; gap: 14px; padding: 16px 28px 24px; border-top: none; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn { flex: none; font-family: inherit; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn.primary { background: #5865F2; color: #FFFFFF; padding: 12px 28px; border-radius: 10px; font-size: 15px; transition: background 0.15s ease, transform 0.1s ease; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn.primary:hover { background: #4752C4; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn.secondary { margin-left: auto; background: transparent; border: none; color: #A6A3B3; padding: 12px 6px; }
+  :is(#screen-onboarding, #screen-planner) .onboard-btn.secondary:hover { color: #FFFFFF; }
   .ob-hint { font-size: 13.5px; color: #A6A3B3; }
   @media (max-width: 520px) {
-    #screen-onboarding .onboard-body { padding: 22px 18px 6px; }
-    #screen-onboarding .onboard-question { font-size: 23px; }
-    #screen-onboarding .onboard-footer { padding: 14px 18px 18px; }
+    :is(#screen-onboarding, #screen-planner) .onboard-body { padding: 22px 18px 6px; }
+    :is(#screen-onboarding, #screen-planner) .onboard-question { font-size: 23px; }
+    :is(#screen-onboarding, #screen-planner) .onboard-footer { padding: 14px 18px 18px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ob-backdrop span, .ob-card, #screen-onboarding .onboard-body.ob-swap, .ob-tile.pop { animation: none; }
+    .ob-backdrop span, .ob-card, :is(#screen-onboarding, #screen-planner) .onboard-body.ob-swap, .ob-tile.pop { animation: none; }
     .ob-tile { transition: none; }
   }
 
   /* ---------- Video planner ---------- */
-  #screen-planner .onboard-progress { padding-top: 12px; }
   .planner-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -3490,20 +3511,19 @@
 
   <!-- VIDEO PLANNER -->
   <section class="screen" id="screen-planner">
-    <div class="back-row">
-      <button class="back-btn" id="plannerCloseBtn" aria-label="Close planner">
+    <div class="ob-backdrop" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="ob-card" role="dialog" aria-modal="true" aria-labelledby="plannerTitle">
+      <button type="button" class="ob-close" id="plannerCloseBtn" aria-label="Close planner">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
-      <div class="project-title-row">
-        <div class="project-title" id="plannerTitle">Plan a Video</div>
-        <div class="project-sub" id="plannerSub">Step 1 of 6</div>
+      <div hidden><span id="plannerTitle">Plan a Video</span><span id="plannerSub">Step 1 of 6</span></div>
+      <div class="onboard-progress" id="plannerProgress"></div>
+      <div class="onboard-body" id="plannerBody"></div>
+      <div class="onboard-footer">
+        <button type="button" class="onboard-btn primary" id="plannerNextBtn">Next</button>
+        <span class="ob-hint" id="plannerHint"></span>
+        <button type="button" class="onboard-btn secondary" id="plannerBackBtn">Back</button>
       </div>
-    </div>
-    <div class="onboard-progress" id="plannerProgress"></div>
-    <div class="onboard-body" id="plannerBody"></div>
-    <div class="onboard-footer">
-      <button type="button" class="onboard-btn secondary" id="plannerBackBtn">Back</button>
-      <button type="button" class="onboard-btn primary" id="plannerNextBtn">Next</button>
     </div>
     <input type="file" id="plannerThumbInput" accept="image/*" multiple hidden>
   </section>
@@ -6363,6 +6383,22 @@
   function plannerSteps(p) { return PLANNER_FLOWS[plannerFormat(p)]; }
   function plannerStepKey(p) { return plannerSteps(p)[plannerStep - 1]; }
   const PLANNER_TOPICS = ['Gaming', 'Vlog', 'Tutorial / How-to', 'Tech', 'Commentary', 'Education', 'Fitness', 'Comedy', 'Reviews', 'Lifestyle', 'Cooking', 'Beauty', 'Music', 'Other'];
+  const PLANNER_TOPIC_DESCRIPTIONS = {
+    'Gaming': "Let's plays, reviews and guides.",
+    'Vlog': 'Your day, your trip, your life.',
+    'Tutorial / How-to': 'Show people how to do something.',
+    'Tech': 'Gadgets, apps and setups.',
+    'Commentary': "Your take on what's happening.",
+    'Education': 'Explain a topic clearly.',
+    'Fitness': 'Workouts, health and training.',
+    'Comedy': 'Sketches, skits and bits.',
+    'Reviews': 'Honest takes on products and media.',
+    'Lifestyle': 'Fashion, home and routines.',
+    'Cooking': 'Recipes and food.',
+    'Beauty': 'Makeup, skincare and hair.',
+    'Music': 'Covers, originals and production.',
+    'Other': 'Something else? Type it in below.'
+  };
   const PLANNER_MIN_HOOKS = 5;
   const PLANNER_SLOTS = 5; // title and thumbnail options
   let plannerProjectId = null;
@@ -6442,6 +6478,8 @@
     document.getElementById('plannerSub').textContent = `Step ${plannerStep} of ${count}`;
     const keepScroll = plannerRenderedStep === plannerStep ? body.scrollTop : 0;
     body.innerHTML = '';
+    if (plannerRenderedStep !== plannerStep) { body.classList.remove('ob-swap'); void body.offsetWidth; body.classList.add('ob-swap'); }
+    document.getElementById('plannerHint').textContent = '';
     ({ topic: renderPlannerTopic, script: renderPlannerScript, hooks: renderPlannerHooks, titles: renderPlannerTitles, thumbs: renderPlannerThumbs, match: renderPlannerMatch })[plannerStepKey(p)](body, p);
     body.scrollTop = keepScroll;
     plannerRenderedStep = plannerStep;
@@ -6469,7 +6507,7 @@
 
   function plannerHeader(body, eyebrow, question, hint) {
     body.insertAdjacentHTML('beforeend',
-      (eyebrow ? `<div class="onboard-eyebrow">${escapeHtml(eyebrow)}</div>` : '') +
+      `<div class="ob-count">Step ${plannerStep} of ${plannerSteps(plannerProject()).length}${eyebrow ? ' · ' + escapeHtml(eyebrow) : ''}</div>` +
       `<div class="onboard-question">${escapeHtml(question)}</div>` +
       (hint ? `<div class="onboard-hint">${escapeHtml(hint)}</div>` : ''));
   }
@@ -6500,27 +6538,22 @@
     const src = p ? p.plan : plannerDraft;
     plannerHeader(body, "Let's plan your next video", 'Short-form or long-form?', 'Short-form (Shorts, TikTok, Reels) skips thumbnails and focuses on your hook and title.');
     const formats = document.createElement('div');
-    formats.className = 'onboard-options';
     const currentFormat = p ? p.format : plannerDraft.format;
-    [['long', 'Long-form video'], ['short', 'Short-form (Shorts, TikTok, Reels)']].forEach(([value, label]) => {
-      formats.appendChild(plannerButton(label, 'onboard-option' + (currentFormat === value ? ' selected' : ''), () => {
-        if (p) { p.format = value; save(); renderHome(); } else plannerDraft.format = value;
-        renderPlanner();
-      }));
-    });
+    const FORMAT_LABELS = { long: 'Long-form', short: 'Short-form' };
+    renderOptionTiles(formats, ['Long-form', 'Short-form'], (o) => FORMAT_LABELS[currentFormat] === o, (o) => {
+      const value = o === 'Short-form' ? 'short' : 'long';
+      if (p) { p.format = value; save(); renderHome(); } else plannerDraft.format = value;
+      renderPlanner();
+    }, { 'Long-form': 'YouTube videos, with titles and a custom thumbnail.', 'Short-form': 'Shorts, TikTok and Reels. Focused on the hook and title.' });
     body.appendChild(formats);
-    body.insertAdjacentHTML('beforeend', '<div class="onboard-question" style="margin-top:26px;">What video is it?</div><div class="onboard-hint">Pick the kind of video — Adonis uses it to suggest titles that fit.</div>');
+    body.insertAdjacentHTML('beforeend', '<div class="ob-section-q">What video is it?</div><div class="onboard-hint">Pick the kind of video. Adonis uses it to suggest titles that fit.</div>');
     const opts = document.createElement('div');
-    opts.className = 'onboard-options';
-    PLANNER_TOPICS.forEach(t => {
-      const b = plannerButton(t, 'onboard-option' + (src.topic === t ? ' selected' : ''), () => {
-        src.topic = t;
-        if (p) save();
-        renderPlanner();
-        if (t === 'Other') { const o = document.getElementById('plannerTopicOther'); if (o) o.focus(); }
-      });
-      opts.appendChild(b);
-    });
+    renderOptionTiles(opts, PLANNER_TOPICS, (t) => src.topic === t, (t) => {
+      src.topic = t;
+      if (p) save();
+      renderPlanner();
+      if (t === 'Other') { const o = document.getElementById('plannerTopicOther'); if (o) o.focus(); }
+    }, PLANNER_TOPIC_DESCRIPTIONS);
     body.appendChild(opts);
     if (src.topic === 'Other') {
       const other = plannerInput('What kind of video? e.g. Travel, ASMR, Podcast', src.topicOther, 60, v => {
@@ -6532,7 +6565,7 @@
       other.style.marginTop = '12px';
       body.appendChild(other);
     }
-    body.insertAdjacentHTML('beforeend', `<div class="onboard-field-label" style="margin-top:26px;">What's it about?</div>`);
+    body.insertAdjacentHTML('beforeend', `<div class="ob-section-q">What's it about?</div><div class="onboard-hint">A working name. You can change it later.</div>`);
     const name = plannerInput('A working name — e.g. My morning routine', p ? p.name : plannerDraft.name, 80, v => {
       if (p) {
         if (v.trim()) { p.name = v.trim(); document.getElementById('plannerTitle').textContent = p.name; plannerSaveSoon(); }
@@ -6551,14 +6584,12 @@
     const plan = p.plan;
     plannerHeader(body, plannerTopicLabel(plan), 'Does your video have a script?', '');
     const opts = document.createElement('div');
-    opts.className = 'onboard-options';
-    [['Yes', true], ['No, not yet', false]].forEach(([label, value]) => {
-      opts.appendChild(plannerButton(label, 'onboard-option' + (plan.hasScript === value ? ' selected' : ''), () => {
-        plan.hasScript = value;
-        save();
-        renderPlanner();
-      }));
-    });
+    const SCRIPT_CHOICES = { 'Yes': true, 'No, not yet': false };
+    renderOptionTiles(opts, ['Yes', 'No, not yet'], (o) => plan.hasScript === SCRIPT_CHOICES[o], (o) => {
+      plan.hasScript = SCRIPT_CHOICES[o];
+      save();
+      renderPlanner();
+    }, { 'Yes': "I've written it, or I'm writing it.", 'No, not yet': "I'll write it now or come back to it later." });
     body.appendChild(opts);
     if (plan.hasScript === null) return;
 
@@ -7791,7 +7822,7 @@ Give concise, specific, practical feedback grounded in the material above when a
   };
 
   // Option tiles: coloured dot, name and a short description. Multi-select unless single is set.
-  function renderOptionTiles(container, options, isSelected, onPick) {
+  function renderOptionTiles(container, options, isSelected, onPick, descriptions) {
     container.innerHTML = '';
     container.className = 'ob-tiles';
     options.forEach((opt, i) => {
@@ -7802,7 +7833,7 @@ Give concise, specific, practical feedback grounded in the material above when a
       btn.setAttribute('aria-pressed', String(isSelected(opt)));
       btn.innerHTML = '<span class="ob-dot" aria-hidden="true"></span><span class="ob-name"></span><span class="ob-desc"></span>';
       btn.querySelector('.ob-name').textContent = opt;
-      btn.querySelector('.ob-desc').textContent = OB_DESCRIPTIONS[opt] || '';
+      btn.querySelector('.ob-desc').textContent = (descriptions && descriptions[opt]) || OB_DESCRIPTIONS[opt] || '';
       btn.addEventListener('click', () => {
         onPick(opt);
         container.querySelectorAll('.ob-tile').forEach((b, j) => {
