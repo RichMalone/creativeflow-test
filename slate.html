@@ -793,7 +793,53 @@
   :is(#screen-onboarding, #screen-planner) .onboard-progress { display: none; }
   :is(#screen-onboarding, #screen-planner) .onboard-body { padding: 26px 28px 8px; overflow-y: auto; }
   :is(#screen-onboarding, #screen-planner) .onboard-body.ob-swap { animation: obSwap 0.32s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
-  @keyframes obSwap { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
+  @keyframes obSwap { from { opacity: 0; transform: translateX(calc(26px * var(--ob-dir, 1))); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+  /* Tiles and rows ease in one after another when a new step appears. */
+  .ob-swap .ob-tile, .ob-swap .planner-list-row, .ob-swap .planner-thumb-slot, .ob-swap .planner-match-row, .ob-swap .ob-reveal {
+    animation: obItemIn 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+    animation-delay: calc(80ms + var(--i, 0) * 35ms);
+  }
+  @keyframes obItemIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .ob-reveal-now { animation: obItemIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  /* Thin progress bar across the top of the card. */
+  .ob-bar { position: absolute; top: 0; left: 18px; right: 18px; height: 3px; border-radius: 0 0 3px 3px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+  .ob-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #5865F2, #9B7BFF); border-radius: inherit; transition: width 0.55s cubic-bezier(0.2, 0.9, 0.25, 1); }
+  /* Script step: drop zone and "use a script you've written". */
+  .ob-drop {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+    padding: 26px 18px; border-radius: 14px; cursor: pointer; margin-top: 18px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.03);
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .ob-drop:hover, .ob-drop:focus-visible { border-color: rgba(255, 255, 255, 0.32); outline: none; }
+  .ob-drop.drag-over { border-color: #5865F2; border-style: solid; background: rgba(88, 101, 242, 0.12); transform: scale(1.01); }
+  .ob-drop.busy { pointer-events: none; opacity: 0.7; }
+  .ob-drop-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(88, 101, 242, 0.18); color: #AEB4FF; margin-bottom: 4px; transition: transform 0.25s ease; }
+  .ob-drop.drag-over .ob-drop-icon { transform: translateY(-3px); }
+  .ob-drop-title { font-weight: 700; font-size: 15px; }
+  .ob-drop-sub { font-size: 13px; color: #A6A3B3; }
+  .ob-or { display: flex; align-items: center; gap: 12px; color: #7F7B8E; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin: 20px 0 12px; }
+  .ob-or::before, .ob-or::after { content: ''; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08); }
+  .ob-script-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+  .ob-script-row {
+    display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; padding: 12px 14px; border-radius: 12px; cursor: pointer;
+    background: rgba(255, 255, 255, 0.035); border: 1.5px solid rgba(255, 255, 255, 0.08); color: #FFFFFF; font-family: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  }
+  .ob-script-row:hover { border-color: rgba(255, 255, 255, 0.18); transform: translateX(2px); }
+  .ob-script-row .ob-dot { margin-top: 0; }
+  .ob-script-row-main { flex: 1; min-width: 0; }
+  .ob-script-row-name { font-weight: 700; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ob-script-row-sub { font-size: 12.5px; color: #A6A3B3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ob-script-row-go { font-size: 13px; font-weight: 600; color: #AEB4FF; flex: none; }
+  .ob-script-status { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: rgba(88, 101, 242, 0.1); border: 1px solid rgba(88, 101, 242, 0.35); }
+  .ob-script-status-text { flex: 1; min-width: 0; font-size: 14px; }
+  .ob-script-status-text small { display: block; color: #A6A3B3; font-size: 12.5px; margin-top: 2px; }
+
+  /* Opening the script page: the toolbar drops in and the paper rises up. */
+  #screen-write.active .doc-toolbar { animation: cfMenuIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1) 0.05s both; }
+  #screen-write.active #scriptBoxFull { animation: obPaperIn 0.55s cubic-bezier(0.2, 0.9, 0.25, 1) 0.1s both; }
+  @keyframes obPaperIn { from { opacity: 0; transform: translateY(28px) scale(0.985); } to { opacity: 1; transform: none; } }
   .ob-count { font-size: 14px; color: #A6A3B3; margin-bottom: 8px; }
   :is(#screen-onboarding, #screen-planner) .onboard-question { font-size: 28px; font-weight: 700; color: #FFFFFF; line-height: 1.2; margin-bottom: 6px; letter-spacing: -0.01em; }
   :is(#screen-onboarding, #screen-planner) .onboard-hint { color: #A6A3B3; font-size: 14px; margin-bottom: 18px; }
@@ -838,7 +884,10 @@
     :is(#screen-onboarding, #screen-planner) .onboard-footer { padding: 14px 18px 18px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ob-backdrop span, .ob-card, :is(#screen-onboarding, #screen-planner) .onboard-body.ob-swap, .ob-tile.pop { animation: none; }
+    .ob-backdrop span, .ob-card, :is(#screen-onboarding, #screen-planner) .onboard-body.ob-swap, .ob-tile.pop,
+    .ob-swap .ob-tile, .ob-swap .planner-list-row, .ob-swap .planner-thumb-slot, .ob-swap .planner-match-row, .ob-swap .ob-reveal, .ob-reveal-now,
+    #screen-write.active .doc-toolbar, #screen-write.active #scriptBoxFull { animation: none; }
+    .ob-bar i { transition: none; }
     .ob-tile { transition: none; }
   }
 
@@ -3252,6 +3301,7 @@
   <section class="screen" id="screen-onboarding">
     <div class="ob-backdrop" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="ob-card" role="dialog" aria-modal="true" aria-labelledby="obQuestion">
+      <div class="ob-bar" aria-hidden="true"><i id="onboardBar"></i></div>
       <div class="onboard-progress" id="onboardProgress"></div>
       <div class="onboard-body" id="onboardBody"></div>
       <div class="onboard-footer">
@@ -3513,6 +3563,8 @@
   <section class="screen" id="screen-planner">
     <div class="ob-backdrop" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="ob-card" role="dialog" aria-modal="true" aria-labelledby="plannerTitle">
+      <div class="ob-bar" aria-hidden="true"><i id="plannerBar"></i></div>
+      <input type="file" id="plannerScriptInput" accept=".pdf,.docx,.txt,.md,.markdown,.fountain,.rtf,.doc,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
       <button type="button" class="ob-close" id="plannerCloseBtn" aria-label="Close planner">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
@@ -6411,6 +6463,9 @@
   let plannerDragging = null;     // drag-to-swap on the matching board: { kind, index }
   let plannerThumbTarget = 0;     // slot the file picker fills first
   let plannerSaveTimer = null;
+  let plannerSwapDir = 1;         // 1 = next step slides in from the right, -1 = from the left
+  let plannerScriptBusy = false;  // a dropped script file is being read
+  let plannerScriptFresh = false; // the script just arrived: play its reveal once
   let writeReturnTo = 'project';  // where the script page's back arrow goes
 
   function defaultPlan() {
@@ -6478,9 +6533,14 @@
     document.getElementById('plannerSub').textContent = `Step ${plannerStep} of ${count}`;
     const keepScroll = plannerRenderedStep === plannerStep ? body.scrollTop : 0;
     body.innerHTML = '';
-    if (plannerRenderedStep !== plannerStep) { body.classList.remove('ob-swap'); void body.offsetWidth; body.classList.add('ob-swap'); }
+    // A new step slides in (from the left when going back); taps within a step don't replay it.
+    body.classList.remove('ob-swap');
+    if (plannerRenderedStep !== plannerStep) { body.style.setProperty('--ob-dir', plannerSwapDir); void body.offsetWidth; body.classList.add('ob-swap'); }
+    plannerSwapDir = 1;
+    document.getElementById('plannerBar').style.width = (plannerStep / count * 100) + '%';
     document.getElementById('plannerHint').textContent = '';
     ({ topic: renderPlannerTopic, script: renderPlannerScript, hooks: renderPlannerHooks, titles: renderPlannerTitles, thumbs: renderPlannerThumbs, match: renderPlannerMatch })[plannerStepKey(p)](body, p);
+    body.querySelectorAll('.planner-list-row, .planner-thumb-slot, .planner-match-row, .ob-reveal').forEach((el, i) => el.style.setProperty('--i', i));
     body.scrollTop = keepScroll;
     plannerRenderedStep = plannerStep;
     document.getElementById('plannerBackBtn').textContent = plannerStep === 1 ? 'Cancel' : 'Back';
@@ -6592,6 +6652,7 @@
     }, { 'Yes': "I've written it, or I'm writing it.", 'No, not yet': "I'll write it now or come back to it later." });
     body.appendChild(opts);
     if (plan.hasScript === null) return;
+    if (plan.hasScript) { renderPlannerScriptImport(body, p); return; }
 
     const card = document.createElement('div');
     card.className = 'planner-card';
@@ -6608,7 +6669,204 @@
     status.className = 'planner-status';
     status.textContent = words ? `Script: ${words} word${words === 1 ? '' : 's'} · ~${Math.max(1, Math.round(words / 150))} min spoken` : 'No script yet.';
     card.appendChild(status);
+    card.classList.add('ob-reveal-now');
     body.appendChild(card);
+  }
+
+  // "Yes, I have a script": drop a file in, pick one from another video, or open the script page.
+  function renderPlannerScriptImport(body, p) {
+    const words = scriptPlainText(p.script).split(/\s+/).filter(Boolean).length;
+    if (words) {
+      const status = document.createElement('div');
+      status.className = 'ob-script-status ' + (plannerScriptFresh ? 'ob-reveal-now' : 'ob-reveal');
+      status.innerHTML = '<span class="ob-dot" style="--dot:#6FCF97" aria-hidden="true"></span><div class="ob-script-status-text"></div>';
+      const text = status.querySelector('.ob-script-status-text');
+      text.textContent = `Script added · ${words} word${words === 1 ? '' : 's'} · ~${Math.max(1, Math.round(words / 150))} min spoken`;
+      const from = document.createElement('small');
+      from.textContent = p.plan.scriptFrom ? `From ${p.plan.scriptFrom}. You can edit it on the script page.` : 'You can edit it on the script page.';
+      text.appendChild(from);
+      status.appendChild(plannerButton('Open', 'planner-action solid', openPlannerScript));
+      body.appendChild(status);
+      plannerScriptFresh = false;
+    }
+
+    const drop = document.createElement('div');
+    drop.className = 'ob-drop ob-reveal' + (plannerScriptBusy ? ' busy' : '');
+    drop.setAttribute('role', 'button');
+    drop.tabIndex = 0;
+    drop.innerHTML = '<div class="ob-drop-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></div>' +
+      '<div class="ob-drop-title"></div><div class="ob-drop-sub">PDF, Word (.docx) or a text file</div>';
+    drop.querySelector('.ob-drop-title').textContent = plannerScriptBusy ? 'Reading your script…' : (words ? 'Drop a different script here' : 'Drop your script here, or click to choose');
+    const pick = () => document.getElementById('plannerScriptInput').click();
+    drop.addEventListener('click', pick);
+    drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('drag-over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('drag-over');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) plannerImportScriptFile(f);
+    });
+    body.appendChild(drop);
+
+    // Scripts already written in other videos.
+    const others = state.projects.filter(o => o.id !== p.id && scriptPlainText(o.script));
+    if (others.length) {
+      body.insertAdjacentHTML('beforeend', '<div class="ob-or ob-reveal">or use a script you\'ve written</div>');
+      const list = document.createElement('div');
+      list.className = 'ob-script-list ob-reveal';
+      others.forEach((o, i) => {
+        const plain = scriptPlainText(o.script);
+        const n = plain.split(/\s+/).filter(Boolean).length;
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'ob-script-row';
+        row.innerHTML = '<span class="ob-dot" aria-hidden="true"></span><span class="ob-script-row-main"><span class="ob-script-row-name"></span><span class="ob-script-row-sub"></span></span><span class="ob-script-row-go">Use</span>';
+        row.querySelector('.ob-dot').style.setProperty('--dot', o.color || OB_DOT_COLORS[i % OB_DOT_COLORS.length]);
+        row.querySelector('.ob-script-row-name').textContent = o.name;
+        row.querySelector('.ob-script-row-sub').textContent = `${n} word${n === 1 ? '' : 's'} · ${plain.slice(0, 80)}${plain.length > 80 ? '…' : ''}`;
+        row.addEventListener('click', () => plannerUseScript(p, o.script, `"${o.name}"`));
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+    }
+
+    body.insertAdjacentHTML('beforeend', '<div class="ob-or ob-reveal">or</div>');
+    const write = plannerButton(words ? 'Open the script page' : 'Paste or write it on the script page', 'planner-action ob-reveal', openPlannerScript);
+    body.appendChild(write);
+  }
+
+  // Puts a script into this video, asking first if it already has one.
+  function plannerUseScript(p, html, from) {
+    const apply = () => {
+      p.script = html;
+      p.plan.scriptFrom = from;
+      plannerScriptFresh = true;
+      save();
+      renderHome();
+      if (plannerProjectId === p.id) renderPlanner();
+      showToast('Script added to this video.');
+    };
+    if (scriptPlainText(p.script)) {
+      showConfirm({ title: 'Replace your script?', message: 'This video already has a script. Replace it with the new one?', confirmLabel: 'Replace', onConfirm: apply });
+    } else apply();
+  }
+
+  document.getElementById('plannerScriptInput').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) plannerImportScriptFile(f);
+    e.target.value = '';
+  });
+
+  async function plannerImportScriptFile(f) {
+    const p = plannerProject();
+    if (!p || plannerScriptBusy) return;
+    plannerScriptBusy = true;
+    renderPlanner();
+    try {
+      const html = await scriptFileToHtml(f);
+      if (!scriptPlainText(html)) throw new Error('empty');
+      plannerUseScript(p, html, `"${f.name}"`);
+    } catch (err) {
+      showToast(err && err.userMessage ? err.userMessage : "Couldn't read that file. Try a PDF, a Word .docx or a .txt file.");
+    } finally {
+      plannerScriptBusy = false;
+      if (plannerProjectId === p.id) renderPlanner();
+    }
+  }
+
+  // ---------- Reading script files (PDF, Word .docx, plain text) ----------
+  const loadedLibs = {};
+  function loadLib(url) {
+    if (!loadedLibs[url]) {
+      loadedLibs[url] = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = () => { delete loadedLibs[url]; const e = new Error('load'); e.userMessage = "Couldn't load the file reader. Check your internet connection and try again."; reject(e); };
+        document.head.appendChild(s);
+      });
+    }
+    return loadedLibs[url];
+  }
+  function fileError(msg) { const e = new Error(msg); e.userMessage = msg; return e; }
+
+  async function scriptFileToHtml(f) {
+    const name = (f.name || '').toLowerCase();
+    const ext = name.includes('.') ? name.split('.').pop() : '';
+    if (f.size > 15 * 1024 * 1024) throw fileError('That file is too big (over 15 MB).');
+    if (ext === 'pdf' || f.type === 'application/pdf') return pdfToScriptHtml(await f.arrayBuffer());
+    if (ext === 'docx') return docxToScriptHtml(await f.arrayBuffer());
+    if (ext === 'doc' || ext === 'pages') throw fileError('Save it as a Word .docx or a PDF first, then drop it in again.');
+    if (ext === 'rtf') return textToScriptHtml(rtfToText(await f.text()));
+    if (['txt', 'md', 'markdown', 'fountain', 'text', ''].includes(ext) || (f.type || '').startsWith('text/')) return textToScriptHtml(await f.text());
+    throw fileError('That type of file isn\'t supported. Try a PDF, a Word .docx or a .txt file.');
+  }
+
+  function textToScriptHtml(text) {
+    return text.replace(/\r\n?/g, '\n').split('\n')
+      .map(line => line.trim() ? `<p>${escapeHtml(line)}</p>` : '<p><br></p>').join('')
+      .replace(/(<p><br><\/p>){2,}/g, '<p><br></p>');
+  }
+
+  function rtfToText(rtf) {
+    return rtf.replace(/\\par[d]?/g, '\n').replace(/\{\\\*[^{}]*\}/g, '').replace(/\\'[0-9a-f]{2}/gi, '')
+      .replace(/\\[a-z]+-?\d* ?/gi, '').replace(/[{}]/g, '');
+  }
+
+  async function pdfToScriptHtml(buf) {
+    await loadLib('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    const pdfjs = window.pdfjsLib;
+    pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const doc = await pdfjs.getDocument({ data: buf }).promise;
+    const paras = [];
+    for (let n = 1; n <= doc.numPages; n++) {
+      const content = await (await doc.getPage(n)).getTextContent();
+      // Group the text into lines by height on the page, then into paragraphs where the gap
+      // between lines is bigger than usual.
+      const lines = [];
+      content.items.forEach(it => {
+        if (!('str' in it)) return;
+        const y = it.transform[5];
+        const last = lines[lines.length - 1];
+        if (last && Math.abs(last.y - y) < 2) last.text += it.str;
+        else lines.push({ y, text: it.str, size: Math.abs(it.transform[3]) || 12 });
+      });
+      let para = '';
+      lines.forEach((line, i) => {
+        const gap = i ? lines[i - 1].y - line.y : 0;
+        if (i && (gap > line.size * 1.75 || gap < 0) && para.trim()) { paras.push(para.trim()); para = ''; }
+        para += (para && !para.endsWith('-') ? ' ' : '') + line.text.trim();
+      });
+      if (para.trim()) paras.push(para.trim());
+    }
+    if (!paras.length) throw fileError("That PDF has no text we can read (it may be a scanned image).");
+    return paras.map(t => `<p>${escapeHtml(t.replace(/\s+/g, ' '))}</p>`).join('');
+  }
+
+  async function docxToScriptHtml(buf) {
+    await loadLib('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js');
+    const result = await window.mammoth.convertToHtml({ arrayBuffer: buf });
+    return cleanImportedHtml(result.value);
+  }
+
+  // Keeps only simple formatting (paragraphs, headings, bold, italic, underline, lists).
+  function cleanImportedHtml(html) {
+    const src = new DOMParser().parseFromString(html, 'text/html').body;
+    const out = document.createElement('div');
+    const KEEP = { P: 'p', H1: 'h1', H2: 'h2', H3: 'h3', H4: 'h3', H5: 'h3', H6: 'h3', STRONG: 'strong', B: 'strong', EM: 'em', I: 'em', U: 'u', UL: 'ul', OL: 'ol', LI: 'li', BR: 'br' };
+    const copy = (from, to) => {
+      from.childNodes.forEach(node => {
+        if (node.nodeType === 3) { to.appendChild(document.createTextNode(node.textContent)); return; }
+        if (node.nodeType !== 1 || ['SCRIPT', 'STYLE', 'IMG'].includes(node.tagName)) return;
+        const tag = KEEP[node.tagName];
+        if (tag) { const el = document.createElement(tag); to.appendChild(el); if (tag !== 'br') copy(node, el); }
+        else copy(node, to);
+      });
+    };
+    copy(src, out);
+    return out.innerHTML;
   }
 
   function openPlannerScript() {
@@ -7183,6 +7441,7 @@
   document.getElementById('plannerBackBtn').addEventListener('click', () => {
     if (plannerStep === 1) { closePlanner(); return; }
     plannerStep--;
+    plannerSwapDir = -1;
     plannerPicked = null;
     const p = plannerProject();
     if (p) { p.plan.step = plannerStep; save(); }
@@ -7830,6 +8089,7 @@ Give concise, specific, practical feedback grounded in the material above when a
       btn.type = 'button';
       btn.className = 'ob-tile' + (isSelected(opt) ? ' selected' : '');
       btn.style.setProperty('--dot', OB_DOT_COLORS[i % OB_DOT_COLORS.length]);
+      btn.style.setProperty('--i', i);
       btn.setAttribute('aria-pressed', String(isSelected(opt)));
       btn.innerHTML = '<span class="ob-dot" aria-hidden="true"></span><span class="ob-name"></span><span class="ob-desc"></span>';
       btn.querySelector('.ob-name').textContent = opt;
@@ -7851,6 +8111,7 @@ Give concise, specific, practical feedback grounded in the material above when a
     renderOptionTiles(container, options, (o) => selectedArr.includes(o), (o) => toggleInArray(selectedArr, o));
   }
 
+  let obSwapDir = 1; // 1 = next question slides in from the right, -1 = going back
   function updateOnboardProgress() {
     const track = document.getElementById('onboardProgress');
     track.innerHTML = '';
@@ -7868,7 +8129,10 @@ Give concise, specific, practical feedback grounded in the material above when a
     const backBtn = document.getElementById('onboardBackBtn');
     backBtn.style.visibility = onboardStep === 1 ? 'hidden' : 'visible';
     body.innerHTML = '';
+    body.style.setProperty('--ob-dir', obSwapDir);
     body.classList.remove('ob-swap'); void body.offsetWidth; body.classList.add('ob-swap');
+    obSwapDir = 1;
+    document.getElementById('onboardBar').style.width = (onboardStep / ONBOARD_STEP_COUNT * 100) + '%';
     document.getElementById('obHint').textContent = [1, 2, 4].includes(onboardStep) ? 'Choose all that apply.' : '';
     const p = state.profile;
 
@@ -7989,6 +8253,7 @@ Give concise, specific, practical feedback grounded in the material above when a
   document.getElementById('onboardBackBtn').addEventListener('click', () => {
     if (onboardStep > 1) {
       onboardStep--;
+      obSwapDir = -1;
       renderOnboardStep();
       document.getElementById('onboardBody').scrollTop = 0;
     } else if (state.profile.onboarded) {
