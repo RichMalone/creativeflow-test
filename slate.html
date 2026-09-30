@@ -1012,6 +1012,25 @@
   }
   #screen-write .write-hooks-title { font-size: 17px; font-weight: 700; }
   #screen-write .write-hooks-hint { color: #A6A3B3; font-size: 13px; }
+  /* Pop-up version: floats over the page, compact. */
+  #screen-write .write-hooks {
+    position: absolute; left: 0; right: 0; margin: 0 auto; z-index: 25;
+    width: min(420px, calc(100% - 24px)); max-height: min(380px, 50vh); overflow-y: auto;
+    padding: 12px 12px 10px; border-radius: 14px; box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5);
+    transform-origin: top center; animation: hooksPop 0.22s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+  @keyframes hooksPop { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
+  #screen-write .write-hooks-head { margin-bottom: 8px; gap: 2px 8px; }
+  #screen-write .write-hooks-title { font-size: 14.5px; }
+  #screen-write .write-hooks-hint { font-size: 12px; }
+  #screen-write .write-hooks .planner-list-row { gap: 6px; margin-bottom: 6px; }
+  #screen-write .write-hooks .onboard-input { padding: 7px 10px; font-size: 13.5px; min-height: 0; height: 34px; border-radius: 9px; }
+  #screen-write .write-hooks .planner-icon-btn { width: 30px; height: 30px; min-width: 30px; font-size: 14px; border-radius: 8px; }
+  #screen-write .write-hooks .planner-add-row { padding: 8px 10px; font-size: 13px; margin-top: 2px; }
+  @media (max-width: 560px) {
+    #screen-write .write-hooks { width: calc(100% - 20px); max-height: 42vh; padding: 10px 10px 8px; }
+    #screen-write .write-hooks-hint { display: none; }
+  }
   #screen-write .onboard-input { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #FFFFFF; font-family: inherit; }
   #screen-write .onboard-input:focus { border-color: #5865F2; }
 
@@ -1028,7 +1047,7 @@
     #screen-write .write-hooks { width: calc(100% - 20px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    #screen-write.active .write-head, #screen-write .write-hooks, .write-saved.saving::before { animation: none; }
+    #screen-write.active .write-head, #screen-write .write-hooks, #screen-write .write-hooks[hidden], .write-saved.saving::before { animation: none; }
   }
 
   /* ---------- Scripts page ---------- */
@@ -3760,7 +3779,7 @@
     <div class="write-hooks" id="writeHooksPanel" hidden>
       <div class="write-hooks-head">
         <span class="write-hooks-title">Hooks</span>
-        <span class="write-hooks-hint">Write 5 or more ways to open the video, and ★ the strongest.</span>
+        <span class="write-hooks-hint">5 or more ways to open the video. ★ the strongest.</span>
       </div>
       <div id="writeHooksList"></div>
     </div>
@@ -7415,6 +7434,11 @@
     const holder = hookHolder(p);
     const btn = document.getElementById('hooksToolBtn');
     const panel = document.getElementById('writeHooksPanel');
+    // A small pop-up just under the toolbar, floating over the script (the page doesn't move).
+    if (writeHooksOpen && panel.hidden) {
+      const screen = document.getElementById('screen-write');
+      panel.style.top = (document.getElementById('docToolbar').getBoundingClientRect().bottom - screen.getBoundingClientRect().top + 8) + 'px';
+    }
     panel.hidden = !writeHooksOpen;
     btn.setAttribute('aria-expanded', String(writeHooksOpen));
     const updateCount = () => {
