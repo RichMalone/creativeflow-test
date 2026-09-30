@@ -4439,10 +4439,18 @@
   // ---------- Version, what's new, bug reports ----------
   // Keep APP_VERSION in step with "version" in package.json. The desktop app reports its real
   // version itself; this is what the web/phone version shows.
-  const APP_VERSION = '1.0.11';
+  const APP_VERSION = '1.0.12';
   const REPORT_URL = 'https://creativeflow-ai.netlify.app/api/report';
   // Newest first. Add an entry for every release; only the newest is shown on the Updates & help page.
   const CHANGELOG = [
+    { version: '1.0.12', date: '2026-10-01', changes: [
+      'New look: the setup questions and Plan a Video are now cards with option tiles, smooth animations and a progress bar.',
+      'Plan a Video floats over your page, and the script step lets you drop in a script (PDF, Word or text) or use one you have already written.',
+      'New: a Scripts page (+ menu). Every script in one place, with search, filters and a quick way to start a new one.',
+      'The script page has a new design, and Hooks opens as a small pop-up that closes when you tap outside it.',
+      'New: Share & export on the script page. Save your script as a PDF or Word file, send a copy, or make a copy.',
+      'Updates now install quietly in the background.'
+    ] },
     { version: '1.0.11', date: '2026-09-30', changes: [
       'Behind the scenes: CreativeFlow now downloads its updates from our own update server.',
       'Includes everything from 1.0.10: the Leaderboard, and daily tasks that ask you to show your work.'
