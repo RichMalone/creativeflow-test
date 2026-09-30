@@ -900,6 +900,107 @@
     .ob-tile { transition: none; }
   }
 
+  /* ---------- Script page (Discord-style, matches the planner) ---------- */
+  #screen-write {
+    position: relative; overflow: hidden; background: #0E0D14;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --text: #FFFFFF; --text-muted: #A6A3B3;
+    --surface: rgba(255, 255, 255, 0.04); --surface-2: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.1);
+    --accent: #5865F2; --accent-rgb: 88, 101, 242; --accent-ink: #FFFFFF;
+    color: var(--text);
+  }
+  #screen-write > * { position: relative; z-index: 1; }
+  #screen-write > .write-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(60% 45% at 12% 0%, rgba(109, 60, 240, 0.28), transparent 70%),
+      radial-gradient(50% 40% at 95% 10%, rgba(46, 91, 255, 0.2), transparent 70%),
+      radial-gradient(60% 50% at 50% 110%, rgba(176, 76, 224, 0.16), transparent 70%);
+  }
+  .write-head {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap; flex-shrink: 0;
+    margin: calc(12px + var(--safe-top)) 16px 0; padding: 12px 16px 14px;
+    background: rgba(24, 24, 30, 0.72); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+  #screen-write.active .write-head { animation: cfMenuIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  .write-back {
+    width: 38px; height: 38px; flex: none; border-radius: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: #FFFFFF;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .write-back:hover { background: rgba(255, 255, 255, 0.12); }
+  .write-back:active { transform: scale(0.94); }
+  .write-head-main { flex: 1 1 200px; min-width: 0; }
+  .write-eyebrow { font-size: 12.5px; color: #A6A3B3; margin-bottom: 2px; }
+  .write-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .write-head-side { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .write-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .write-pill { font-size: 12.5px; font-weight: 600; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: #D8D6E2; white-space: nowrap; }
+  .write-saved { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #A6A3B3; white-space: nowrap; transition: color 0.2s ease; }
+  .write-saved::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #6FCF97; box-shadow: 0 0 0 3px rgba(111, 207, 151, 0.18); transition: background 0.2s ease, box-shadow 0.2s ease; }
+  .write-saved.saving::before { background: #F2C94C; box-shadow: 0 0 0 3px rgba(242, 201, 76, 0.18); animation: writePulse 0.9s ease-in-out infinite; }
+  @keyframes writePulse { 50% { opacity: 0.4; } }
+  .write-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.05); }
+  .write-progress-fill { height: 100%; background: #5865F2; transition: width 0.55s cubic-bezier(0.2, 0.9, 0.25, 1); }
+
+  /* Toolbar: a floating glass bar. */
+  #screen-write .doc-toolbar {
+    align-self: center; width: fit-content; max-width: calc(100% - 32px); box-sizing: border-box;
+    margin: 12px auto 0; padding: 8px 10px; gap: 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+    background: rgba(24, 24, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  }
+  #screen-write .doc-toolbar::-webkit-scrollbar { display: none; }
+  #screen-write .doc-toolbar select {
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 9px;
+    color: #FFFFFF; font-family: inherit; font-size: 13px; padding: 7px 10px; height: 34px; cursor: pointer;
+  }
+  #screen-write .doc-toolbar select option { background: #1C1B24; color: #FFFFFF; }
+  #screen-write .doc-toolbar-divider { background: rgba(255, 255, 255, 0.1); height: 22px; margin: 0 6px; }
+  #screen-write .doc-tool-btn { width: 34px; height: 34px; border-radius: 9px; color: #B8B5C6; transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease; }
+  #screen-write .doc-tool-btn:hover { background: rgba(255, 255, 255, 0.07); color: #FFFFFF; }
+  #screen-write .doc-tool-btn.active { background: rgba(88, 101, 242, 0.22); border-color: rgba(88, 101, 242, 0.55); color: #C9CDFF; }
+  #screen-write .doc-color-label { height: 34px; border-radius: 9px; padding: 0 10px; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); color: #B8B5C6; transition: background 0.15s ease, border-color 0.15s ease; }
+  #screen-write .doc-color-label:hover { background: rgba(255, 255, 255, 0.1); }
+  #screen-write .doc-color-text { font-size: 12.5px; color: #FFFFFF; font-family: inherit; }
+  #screen-write .doc-hooks-btn { margin-left: 4px; font-family: inherit; }
+  #screen-write .doc-hooks-btn[aria-expanded="true"] { background: #5865F2; border-color: #5865F2; color: #FFFFFF; }
+  #screen-write .doc-hooks-btn[aria-expanded="true"] .doc-hooks-count { background: #FFFFFF; color: #5865F2; }
+
+  /* Hooks drawer: a card like the planner's. */
+  #screen-write .write-hooks {
+    align-self: center; width: min(820px, calc(100% - 32px)); box-sizing: border-box; margin: 10px auto 0;
+    background: rgba(24, 24, 30, 0.86); border: 1px solid rgba(88, 101, 242, 0.45); border-radius: 16px;
+    padding: 16px 18px 18px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+    animation: obItemIn 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+  #screen-write .write-hooks-title { font-size: 17px; font-weight: 700; }
+  #screen-write .write-hooks-hint { color: #A6A3B3; font-size: 13px; }
+  #screen-write .onboard-input { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #FFFFFF; font-family: inherit; }
+  #screen-write .onboard-input:focus { border-color: #5865F2; }
+
+  /* The paper. */
+  #screen-write .doc-canvas { padding-top: 22px; }
+  #screen-write .doc-page { border-radius: 4px; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25)); }
+  #screen-write .doc-page::selection, #screen-write .doc-page *::selection { background: rgba(88, 101, 242, 0.25); }
+
+  @media (max-width: 560px) {
+    .write-head { margin: calc(8px + var(--safe-top)) 10px 0; padding: 10px 12px 12px; gap: 10px; }
+    .write-title { font-size: 18px; }
+    .write-head-side { width: 100%; }
+    #screen-write .doc-toolbar { max-width: calc(100% - 20px); }
+    #screen-write .write-hooks { width: calc(100% - 20px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #screen-write.active .write-head, #screen-write .write-hooks, .write-saved.saving::before { animation: none; }
+  }
+
   /* ---------- Scripts page ---------- */
   .scripts-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
   .scripts-search { flex: 1 1 220px; min-width: 0; }
@@ -3550,18 +3651,21 @@
 
   <!-- FULL-SCREEN SCRIPT WRITER -->
   <section class="screen" id="screen-write">
-    <div class="back-row">
-      <button class="back-btn" id="writeBackBtn" aria-label="Back to project">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+    <div class="write-glow" aria-hidden="true"></div>
+    <header class="write-head">
+      <button class="write-back" id="writeBackBtn" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <div class="project-title-row">
-        <div class="project-title" id="writeProjTitle">Script</div>
-        <div class="project-sub" id="writeMeta">0 words · ~0:00 spoken</div>
+      <div class="write-head-main">
+        <div class="write-eyebrow" id="writeEyebrow">Script</div>
+        <div class="write-title" id="writeProjTitle">Script</div>
       </div>
-    </div>
-    <div class="card-progress-track" style="margin:0 20px 0; width:calc(100% - 40px);">
-      <div class="card-progress-fill" id="writeProgressBar" style="width:0%;"></div>
-    </div>
+      <div class="write-head-side">
+        <div class="write-pills" id="writeMeta"></div>
+        <span class="write-saved" id="writeSaved" aria-live="polite">Saved</span>
+      </div>
+      <div class="write-progress" aria-hidden="true"><div class="write-progress-fill" id="writeProgressBar" style="width:0%;"></div></div>
+    </header>
 
     <div class="doc-toolbar" id="docToolbar">
       <select id="blockFormatSelect" aria-label="Text style">
@@ -6159,6 +6263,8 @@
 
   function openScriptWriter(p) {
     document.getElementById('writeProjTitle').textContent = (p.title && p.title.trim()) ? p.title : p.name;
+    document.getElementById('writeEyebrow').textContent = `Script · ${p.format === 'short' ? 'Short-form' : 'Long-form'}`;
+    setWriteSaved(true);
     scriptBoxFull.innerHTML = scriptHtmlFromLegacy(p.script);
     ensureScriptParagraph();
     updateScriptMeta(p);
@@ -6258,7 +6364,8 @@
     updateScriptMeta(p);
     renderProjectHeader(p);
     clearTimeout(scriptSaveTimer);
-    scriptSaveTimer = setTimeout(() => { save(); recordUsage('scriptEdits'); }, 300);
+    setWriteSaved(false);
+    scriptSaveTimer = setTimeout(() => { save(); recordUsage('scriptEdits'); setWriteSaved(true); }, 300);
   });
 
   document.getElementById('writeBackBtn').addEventListener('click', () => {
@@ -6379,6 +6486,12 @@
     updateToolbarState();
   });
 
+  function setWriteSaved(done) {
+    const el = document.getElementById('writeSaved');
+    el.textContent = done ? 'Saved' : 'Saving…';
+    el.classList.toggle('saving', !done);
+  }
+
   function updateScriptMeta(p) {
     const plain = scriptPlainText(p.script);
     const words = plain.length ? plain.split(/\s+/).filter(Boolean).length : 0;
@@ -6390,7 +6503,8 @@
 
     document.getElementById('wordCount').textContent = wordLabel;
     document.getElementById('timeEstimate').textContent = timeLabel;
-    document.getElementById('writeMeta').textContent = `${wordLabel} · ${timeLabel} · ${scriptPageCount} page${scriptPageCount === 1 ? '' : 's'}`;
+    document.getElementById('writeMeta').innerHTML = [wordLabel, timeLabel, `${scriptPageCount} page${scriptPageCount === 1 ? '' : 's'}`]
+      .map(t => `<span class="write-pill">${escapeHtml(t)}</span>`).join('');
 
     const progress = computeProgress(p);
     const writeBar = document.getElementById('writeProgressBar');
