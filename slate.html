@@ -900,6 +900,31 @@
     .ob-tile { transition: none; }
   }
 
+  /* ---------- Scripts page ---------- */
+  .scripts-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .scripts-search { flex: 1 1 220px; min-width: 0; }
+  .scripts-sort { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 13.5px; }
+  .scripts-new { display: flex; gap: 8px; margin-bottom: 16px; }
+  .scripts-new .onboard-input { flex: 1; min-width: 0; }
+  .scripts-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .scripts-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .script-card {
+    display: flex; flex-direction: column; gap: 8px; text-align: left; cursor: pointer; font: inherit; color: var(--text);
+    padding: 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); position: relative; overflow: hidden;
+    transition: transform 0.18s var(--ease-out, ease), border-color 0.18s ease, box-shadow 0.18s ease;
+    animation: obItemIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1) both; animation-delay: calc(var(--i, 0) * 30ms);
+  }
+  .script-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--dot); }
+  .script-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--dot) 60%, var(--border)); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22); }
+  .script-card-top { display: flex; align-items: center; gap: 8px; }
+  .script-card-name { flex: 1; min-width: 0; font-weight: 700; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .script-card-tag { flex: none; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: color-mix(in srgb, var(--dot) 18%, transparent); color: var(--text); }
+  .script-card-preview { font-size: 13.5px; line-height: 1.5; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 3em; }
+  .script-card-preview.empty { font-style: italic; }
+  .script-card-meta { font-size: 12.5px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .scripts-empty { text-align: center; color: var(--text-muted); padding: 40px 16px; font-size: 14px; }
+  @media (prefers-reduced-motion: reduce) { .script-card { animation: none; } }
+
   /* ---------- Video planner ---------- */
   .planner-card {
     background: var(--surface);
@@ -2971,6 +2996,7 @@
   #screen-planner.active,
   #screen-leaderboard.active,
   #screen-ideabank.active,
+  #screen-scripts.active,
   #screen-analytics.active,
   #screen-dayplanner.active,
   #screen-settings.active,
@@ -3385,6 +3411,7 @@
       <button type="button" class="fab-menu-item" id="fabPlanVideoBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg> Plan a Video</button>
       <button type="button" class="fab-menu-item" id="fabNewPlaylistBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> New Playlist</button>
       <button type="button" class="fab-menu-item" id="fabNewProjectBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="7" y1="6" x2="7" y2="18"/><line x1="17" y1="6" x2="17" y2="18"/><line x1="2" y1="10" x2="7" y2="10"/><line x1="2" y1="14" x2="7" y2="14"/><line x1="17" y1="10" x2="22" y2="10"/><line x1="17" y1="14" x2="22" y2="14"/></svg> New Project</button>
+      <button type="button" class="fab-menu-item" id="fabScriptsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg> Scripts</button>
       <button type="button" class="fab-menu-item" id="fabIdeaBankBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg> Idea Bank</button>
       <button type="button" class="fab-menu-item" id="fabCalendarBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Content Calendar</button>
       <button type="button" class="fab-menu-item" id="fabAnalyticsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Analytics</button>
@@ -3393,6 +3420,35 @@
     <button type="button" class="fab-btn" id="fabBtn" aria-label="Add">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
+  </section>
+
+  <!-- SCRIPTS -->
+  <section class="screen" id="screen-scripts">
+    <div class="back-row">
+      <button class="back-btn" id="scriptsBackBtn" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="project-title-row">
+        <div class="project-title">Scripts</div>
+        <div class="project-sub" id="scriptsSub">Every script, in one place</div>
+      </div>
+    </div>
+    <div class="settings-body">
+      <form class="scripts-new" id="scriptsNewForm">
+        <input type="text" class="onboard-input" id="scriptsNewName" placeholder="Start a new script: name the video…" maxlength="80" autocomplete="off" aria-label="New script name">
+        <button type="submit" class="planner-action solid">+ New script</button>
+      </form>
+      <div class="scripts-tools">
+        <input type="search" class="onboard-input scripts-search" id="scriptsSearch" placeholder="Search your scripts" autocomplete="off" aria-label="Search scripts">
+        <select class="scripts-sort" id="scriptsSort" aria-label="Sort scripts">
+          <option value="recent">Last edited</option>
+          <option value="longest">Longest</option>
+          <option value="az">A–Z</option>
+        </select>
+      </div>
+      <div class="scripts-chips" id="scriptsChips"></div>
+      <div class="scripts-list" id="scriptsList"></div>
+    </div>
   </section>
 
   <!-- IDEA BANK -->
@@ -5144,6 +5200,7 @@
     { key: 'newProject', name: 'New Project', desc: 'In the + menu', selectors: ['#fabNewProjectBtn'] },
     { key: 'planVideo', name: 'Plan a Video', desc: 'In the + menu', selectors: ['#fabPlanVideoBtn'] },
     { key: 'playlists', name: 'New Playlist', desc: 'In the + menu', selectors: ['#fabNewPlaylistBtn'] },
+    { key: 'scripts', name: 'Scripts', desc: 'In the + menu', selectors: ['#fabScriptsBtn'] },
     { key: 'ideaBank', name: 'Idea Bank', desc: 'In the + menu', selectors: ['#fabIdeaBankBtn'] },
     { key: 'calendar', name: 'Content Calendar', desc: '+ menu and bottom bar', selectors: ['#fabCalendarBtn', '#tabBar [data-screen="calendar"]'] },
     { key: 'analytics', name: 'Analytics', desc: 'In the + menu', selectors: ['#fabAnalyticsBtn'] },
@@ -5151,7 +5208,7 @@
     { key: 'leaderboard', name: 'Leaderboard', desc: 'In the ☰ menu', selectors: ['#burgerLeaderboardBtn'] },
     { key: 'adonis', name: 'Adonis (AI)', desc: 'Menu, bottom bar, project tab and planner buttons', selectors: ['#aiHomeBtn', '#tabBar [data-screen="ai"]', '.tab[data-tab="ai"]', '.planner-ai'] }
   ];
-  const FAB_FEATURE_KEYS = ['newProject', 'planVideo', 'playlists', 'ideaBank', 'calendar', 'analytics', 'tasks'];
+  const FAB_FEATURE_KEYS = ['newProject', 'planVideo', 'playlists', 'scripts', 'ideaBank', 'calendar', 'analytics', 'tasks'];
 
   (function addHideRules() {
     const style = document.createElement('style');
@@ -6197,6 +6254,7 @@
     ensureScriptParagraph();
     paginateScript();
     p.script = cleanScriptHtml();
+    p.scriptEditedAt = Date.now();
     updateScriptMeta(p);
     renderProjectHeader(p);
     clearTimeout(scriptSaveTimer);
@@ -6208,6 +6266,12 @@
       writeReturnTo = 'project';
       renderPlanner();
       switchScreen('planner');
+      return;
+    }
+    if (writeReturnTo === 'scripts') {
+      writeReturnTo = 'project';
+      renderHome();
+      openScriptsPage();
       return;
     }
     const p = findProject(currentProjectId);
@@ -6750,6 +6814,7 @@
   function plannerUseScript(p, html, from) {
     const apply = () => {
       p.script = html;
+      p.scriptEditedAt = Date.now();
       p.plan.scriptFrom = from;
       plannerScriptFresh = true;
       save();
@@ -7507,6 +7572,7 @@
     document.getElementById('screen-settings').classList.toggle('active', name === 'settings');
     document.getElementById('screen-dev').classList.toggle('active', name === 'dev');
     document.getElementById('screen-ideabank').classList.toggle('active', name === 'ideabank');
+    document.getElementById('screen-scripts').classList.toggle('active', name === 'scripts');
     document.getElementById('screen-editprofile').classList.toggle('active', name === 'editprofile');
     document.getElementById('screen-dayplanner').classList.toggle('active', name === 'dayplanner');
     document.getElementById('screen-dailyquests').classList.toggle('active', name === 'dailyquests');
@@ -9700,6 +9766,124 @@ Give concise, specific, practical feedback grounded in the material above when a
       fabMenu.classList.remove('active');
     }
   });
+
+  // ---------- Scripts page ----------
+  // Every video's script in one place. Scripts stay inside their video; this page just lists them.
+  let scriptsFilter = 'all'; // all | long | short | none
+  document.getElementById('fabScriptsBtn').addEventListener('click', () => {
+    fabMenu.classList.remove('active');
+    openScriptsPage();
+  });
+  document.getElementById('scriptsBackBtn').addEventListener('click', () => switchScreen('home'));
+  document.getElementById('scriptsSearch').addEventListener('input', renderScriptsList);
+  document.getElementById('scriptsSort').addEventListener('change', renderScriptsList);
+  document.getElementById('scriptsNewForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('scriptsNewName');
+    const name = input.value.trim();
+    if (!name) { input.focus(); showToast('Name the video first.'); return; }
+    const p = {
+      id: uid(), name, color: COLORS[state.projects.length % COLORS.length], format: scriptsFilter === 'short' ? 'short' : 'long',
+      ideas: [], script: '', title: '', thumbnail: null, published: false, playlists: [], scheduledDate: '', createdAt: Date.now()
+    };
+    state.projects.unshift(p);
+    save();
+    recordUsage('projectsCreated');
+    input.value = '';
+    renderHome();
+    openScriptFromList(p.id);
+  });
+
+  function openScriptsPage() {
+    renderScriptsList();
+    switchScreen('scripts');
+  }
+
+  function openScriptFromList(id) {
+    const p = findProject(id);
+    if (!p) return;
+    currentProjectId = p.id;
+    writeReturnTo = 'scripts';
+    openScriptWriter(p);
+  }
+
+  function timeAgo(ts) {
+    if (!ts) return '';
+    const mins = Math.round((Date.now() - ts) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+    const days = Math.round(hrs / 24);
+    if (days < 7) return days === 1 ? 'yesterday' : days + ' days ago';
+    return new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: new Date(ts).getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
+  }
+
+  function renderScriptsList() {
+    const rows = state.projects.map(p => {
+      const plain = scriptPlainText(p.script);
+      return { p, plain, words: plain ? plain.split(/\s+/).length : 0, edited: p.scriptEditedAt || p.createdAt || 0 };
+    });
+    const withScript = rows.filter(r => r.words);
+    const counts = {
+      all: withScript.length,
+      long: withScript.filter(r => r.p.format !== 'short').length,
+      short: withScript.filter(r => r.p.format === 'short').length,
+      none: rows.length - withScript.length
+    };
+    document.getElementById('scriptsSub').textContent = counts.all
+      ? `${counts.all} script${counts.all === 1 ? '' : 's'} · ${withScript.reduce((n, r) => n + r.words, 0).toLocaleString()} words`
+      : 'Every script, in one place';
+
+    const chips = document.getElementById('scriptsChips');
+    chips.innerHTML = '';
+    [['all', 'All'], ['long', 'Long-form'], ['short', 'Short-form'], ['none', 'Needs a script']].forEach(([key, label]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (scriptsFilter === key ? ' active' : '');
+      b.textContent = `${label} (${counts[key]})`;
+      b.addEventListener('click', () => { scriptsFilter = key; renderScriptsList(); });
+      chips.appendChild(b);
+    });
+
+    const q = document.getElementById('scriptsSearch').value.trim().toLowerCase();
+    let list = scriptsFilter === 'none' ? rows.filter(r => !r.words)
+      : withScript.filter(r => scriptsFilter === 'all' || (scriptsFilter === 'short') === (r.p.format === 'short'));
+    if (q) list = list.filter(r => (r.p.name + ' ' + (r.p.title || '') + ' ' + r.plain).toLowerCase().includes(q));
+    const sort = document.getElementById('scriptsSort').value;
+    list.sort(sort === 'longest' ? (a, b) => b.words - a.words
+      : sort === 'az' ? (a, b) => a.p.name.localeCompare(b.p.name)
+      : (a, b) => b.edited - a.edited);
+
+    const wrap = document.getElementById('scriptsList');
+    wrap.innerHTML = '';
+    if (!list.length) {
+      wrap.innerHTML = '<div class="scripts-empty"></div>';
+      wrap.firstChild.textContent = q ? 'No scripts match that search.'
+        : scriptsFilter === 'none' ? 'Every video has a script. Nice.'
+        : 'No scripts yet. Start one above, or open a video and tap Script.';
+      wrap.firstChild.style.gridColumn = '1 / -1';
+      return;
+    }
+    list.forEach((r, i) => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'script-card';
+      card.style.setProperty('--dot', r.p.color || '#8358FF');
+      card.style.setProperty('--i', Math.min(i, 12));
+      card.innerHTML = '<div class="script-card-top"><span class="script-card-name"></span><span class="script-card-tag"></span></div><div class="script-card-preview"></div><div class="script-card-meta"></div>';
+      card.querySelector('.script-card-name').textContent = (r.p.title && r.p.title.trim()) || r.p.name;
+      card.querySelector('.script-card-tag').textContent = r.p.format === 'short' ? 'Short' : 'Long';
+      const preview = card.querySelector('.script-card-preview');
+      if (r.words) preview.textContent = r.plain.slice(0, 220);
+      else { preview.textContent = 'No script yet. Tap to start writing.'; preview.classList.add('empty'); }
+      const meta = card.querySelector('.script-card-meta');
+      const parts = r.words ? [`${r.words.toLocaleString()} words`, `~${Math.max(1, Math.round(r.words / 150))} min spoken`, `Edited ${timeAgo(r.edited)}`] : [`Created ${timeAgo(r.p.createdAt)}`];
+      parts.forEach(t => { const s = document.createElement('span'); s.textContent = t; meta.appendChild(s); });
+      card.addEventListener('click', () => openScriptFromList(r.p.id));
+      wrap.appendChild(card);
+    });
+  }
 
   // ---------- Idea Bank ----------
   function renderQuickIdeaList() {
